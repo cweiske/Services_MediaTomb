@@ -21,6 +21,14 @@ class Services_MediaTomb
 
     protected $arDefaultParams = array();
 
+    /**
+    * Weather to work around the mediatomb timing bug
+    * in 0.11.0 (#1962538)
+    *
+    * @var boolean
+    */
+    public $bWorkaroundTimingBug = true;
+
 
 
     /**
@@ -105,6 +113,21 @@ class Services_MediaTomb
 
         return $xml;
     }//protected function sendRequest($arParams)
+
+
+
+    /**
+    * Work around the timing bug in mediatomb 0.11.0.
+    * After each deletion, we need to wait some time.
+    *
+    * @see http://sourceforge.net/tracker/index.php?func=detail&aid=1962538&group_id=129766&atid=715780
+    */
+    protected function workaroundTimingBug()
+    {
+        if ($this->bWorkaroundTimingBug) {
+            usleep(500000);
+        }
+    }//protected function workaroundBug()
 
 
 
@@ -245,6 +268,7 @@ class Services_MediaTomb
             'req_type'  => 'remove',
             'object_id' => $item->id
         ));
+        $this->workaroundTimingBug();
 
         return true;
     }//public function delete(Services_MediaTomb_ItemBase $item)
