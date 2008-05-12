@@ -1,0 +1,8 @@
+<?php
+$GLOBALS['Services_MediaTomb_UnittestConfig'] = array(
+    'host'     => 'FIXME',
+    'port'     => 'FIXME',
+    'username' => 'FIXME',
+    'password' => 'FIXME',
+);
+?>
