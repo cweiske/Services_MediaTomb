@@ -1,4 +1,15 @@
 <?php
+/**
+* Part of Services_MediaTomb
+*
+* PHP version 5
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
+*/
 require_once 'Services/MediaTomb/ItemBase.php';
 
 

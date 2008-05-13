@@ -1,4 +1,15 @@
 <?php
+/**
+* Part of Services_MediaTomb
+*
+* PHP version 5
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
+*/
 require_once 'Services/MediaTomb/Exception.php';
 
 require_once 'Services/MediaTomb/Container.php';
@@ -7,18 +18,59 @@ require_once 'Services/MediaTomb/Item.php';
 require_once 'Services/MediaTomb/SimpleItem.php';
 
 /**
+* Library to access a MediaTomb server remotely.
+* Provides methods to list, create, edit and delete items
+* and containers on the server.
+*
+* Internally, MediaTomb's AJAX API is utilized.
+* Since that may change without warning, the class here might
+* need to be adjusted in the future.
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
+*
 * @TODO:
 * - track container path
 */
 class Services_MediaTomb
 {
+    /**
+    * HTTP GET protocol for external items
+    *
+    * @var string
+    */
     const PROTOCOL_HTTP_GET = 'http-get';
 
+    /**
+    * Server IP
+    *
+    * @var string
+    */
     protected $ip = null;
+
+    /**
+    * Server port
+    *
+    * @var integer
+    */
     protected $port = 49152;
 
+    /**
+    * Full path to the AJAX interface on the server
+    *
+    * @var string
+    */
     protected $strInterfaceUrl = null;
 
+    /**
+    * Array of key-value pairs that define parameters
+    * that are sent with each request.
+    *
+    * @var array
+    */
     protected $arDefaultParams = array();
 
     /**
@@ -32,7 +84,13 @@ class Services_MediaTomb
 
 
     /**
-    * FIXME: use DSN
+    * Create a new Services_MediaTomb instance and
+    * log into the server
+    *
+    * @param string  $username Server username
+    * @param string  $password Password
+    * @param string  $ip       IP address or hostname of server
+    * @param integer $port     Server port number. May be omitted
     */
     public function __construct($username, $password, $ip, $port = null)
     {
@@ -40,9 +98,35 @@ class Services_MediaTomb
         if ($port !== null) {
             $this->port = $port;
         }
-        $this->strInterfaceUrl = 'http://' . $this->ip . ':' . $this->port . '/content/interface?';
+        $this->strInterfaceUrl =
+            'http://' . $this->ip . ':' . $this->port
+            . '/content/interface?';
         $this->login($username, $password);
     }//public function __construct($username, $password, $ip, $port)
+
+
+
+    /**
+    * Returns the ID for the given item.
+    *
+    * @param mixed $item Item object or ID
+    *
+    * @return integer ID
+    */
+    protected function extractId($item)
+    {
+        if (is_int($item)) {
+            return $item;
+        } else if (is_object($item)
+            && $item instanceof Services_MediaTomb_ItemBase
+        ) {
+            return $item->id;
+        } else {
+            throw new Services_MediaTomb_Exception(
+                'Passed ' . get_type($item) . ' is no item or ID'
+            );
+        }
+    }//protected function extractId($item)
 
 
 
@@ -58,7 +142,7 @@ class Services_MediaTomb
     */
     protected function login($username, $password)
     {
-        $xml = $this->sendRequest(array(
+        $xml   = $this->sendRequest(array(
             'req_type' => 'auth',
             'sid'      => 'null'
         ));
@@ -87,7 +171,6 @@ class Services_MediaTomb
     * Sends request to server.
     * Automatically checks for errors in the returned xml values.
     *
-    *
     * @param array $arParams Array of parameters (key-value pairs) that shall
     *                        be send with the request
     *
@@ -97,7 +180,7 @@ class Services_MediaTomb
     */
     protected function sendRequest($arParams)
     {
-        $arParams = array_merge($this->arDefaultParams, $arParams);
+        $arParams       = array_merge($this->arDefaultParams, $arParams);
         $arParamStrings = array();
         foreach ($arParams as $strKey => $strValue) {
             $arParamStrings[] = urlencode($strKey) . '=' . urlencode($strValue);
@@ -120,6 +203,8 @@ class Services_MediaTomb
     * Work around the timing bug in mediatomb 0.11.0.
     * After each deletion, we need to wait some time.
     *
+    * @return void
+    *
     * @see http://sourceforge.net/tracker/index.php?func=detail&aid=1962538&group_id=129766&atid=715780
     */
     protected function workaroundTimingBug()
@@ -134,14 +219,19 @@ class Services_MediaTomb
     /**
     * Creates the item in mediatomb
     *
-    * @param integer                     $nParentId Parent container ID to add element to
-    * @param Services_MediaTomb_ItemBase $item      Item to create
-    * @param boolean                     $bReturn   If the saved item shall be fetched and returned
+    * @param mixed                       $parent  Parent container item (or ID)
+    *                                              to add element to
+    * @param Services_MediaTomb_ItemBase $item    Item to create
+    * @param boolean                     $bReturn If the saved item shall
+    *                                              be fetched and returned
     *
     * @return Services_MediaTomb_ItemBase Newly created item
     */
-    public function create($nParentId, Services_MediaTomb_ItemBase $item, $bReturn = true)
-    {
+    public function create(
+        $parent, Services_MediaTomb_ItemBase $item, $bReturn = true
+    ) {
+        $nParentId = $this->extractId($parent);
+
         $arParams = array_merge(
             array(
                 'req_type'  => 'add_object',
@@ -177,16 +267,21 @@ class Services_MediaTomb
     /**
     * Create a new container under container $nId
     *
+    * @param mixed   $parent   Parent container (or ID) to create container in
+    * @param string  $strTitle Title of new container
+    * @param boolean $bReturn  If the created container shall be returned
+    *
     * @return Services_MediaTomb_Container
     */
-    public function createContainer($nParentId, $strTitle, $bReturn = true)
+    public function createContainer($parent, $strTitle, $bReturn = true)
     {
         $container = new Services_MediaTomb_Container();
+
         $container->objType = 1;
         $container->title   = $strTitle;
         $container->class   = 'object.container';
 
-        return $this->create($nParentId, $container, true);
+        return $this->create($parent, $container, $bReturn);
     }//public function createContainer(..)
 
 
@@ -195,13 +290,15 @@ class Services_MediaTomb
     * Creates a container with the given path and returns it.
     *
     * @param string  $strPath  Path, e.g. 'Audio/Artists/Maria Taylor'
-    * @param boolean $bParents If parent containers shall be created
+    * @param boolean $bParents If non-existent parent containers
+    *                           shall be created
     * @param boolean $bReturn  If the newly created container should be returned
     *
     * @return Services_MediaTomb_Container
     */
-    public function createContainerByPath($strPath, $bParents = true, $bReturn = true)
-    {
+    public function createContainerByPath(
+        $strPath, $bParents = true, $bReturn = true
+    ) {
         $arParts   = explode('/', $strPath);
         $nParentId = 0;
         foreach ($arParts as $strName) {
@@ -219,7 +316,11 @@ class Services_MediaTomb
             $nParentId = $container->id;
         }
 
-        //TODO: use $bParents and $bReturn
+        //TODO: use $bParents
+
+        if (!$bReturn) {
+            return null;
+        }
 
         return $container;
     }//public function createContainerByPath(..)
@@ -227,21 +328,26 @@ class Services_MediaTomb
 
 
     /**
-    * Create a new external link under container $nId
+    * Create a new external link under container $parent.
     *
-    * @param integer $nParentId      Parent ID
+    * @param mixed   $parent         Parent object (or ID)
     * @param string  $strTitle       Item title/name
     * @param string  $strUrl         Full URL to link to
     * @param string  $strDescription Description text
     * @param string  $strMimetype    Mime type, e.g. application/ogg
+    * @param string  $strProtocol    Protocol of link (e.g. "http-get")
+    * @param string  $strClass       UPnP Item class (defaults to "object.item")
+    * @param boolean $bReturn        If the newly created object
+    *                                 shall be returned
     *
     * @return Services_MediaTomb_ExternalLink
     */
     public function createExternalLink(
-        $nParentId, $strTitle, $strUrl, $strDescription, $strMimetype,
+        $parent, $strTitle, $strUrl, $strDescription, $strMimetype,
         $strProtocol = 'http-get', $strClass = 'object.item', $bReturn = true
     ) {
         $link = new Services_MediaTomb_ExternalLink();
+
         $link->objType     = 10;
         $link->title       = $strTitle;
         $link->url         = $strUrl;
@@ -250,7 +356,7 @@ class Services_MediaTomb
         $link->description = $strDescription;
         $link->mimetype    = $strMimetype;
 
-        return $this->create($nParentId, $link, true);
+        return $this->create($parent, $link, true);
     }//public function createExternalLink(..)
 
 
@@ -258,15 +364,15 @@ class Services_MediaTomb
     /**
     * Deletes an item or container.
     *
-    * @param Services_MediaTomb_ItemBase $item Item to delete
+    * @param mixed $item Item object or item ID to delete
     *
     * @return boolean True if all went well
     */
-    public function delete(Services_MediaTomb_ItemBase $item)
+    public function delete($item)
     {
         $this->sendRequest(array(
             'req_type'  => 'remove',
-            'object_id' => $item->id
+            'object_id' => $this->extractId($item)
         ));
         $this->workaroundTimingBug();
 
@@ -278,6 +384,8 @@ class Services_MediaTomb
     /**
     * Returns the container in the given path,
     * e.g. 'Audio/Albums/Maria Taylor'
+    *
+    * @param string $strPath Full path
     *
     * @return Services_MediaTomb_Container Null if not found
     */
@@ -299,20 +407,21 @@ class Services_MediaTomb
 
 
     /**
-    * Returns an array of children containers for the given ID.
+    * Returns an array of children containers for the given ID/item.
     * 0 is the root id.
     *
-    * @param integer $nParentId Parental id
+    * @param mixed $parent Parental object (or ID)
     *
     * @return Services_MediaTomb_Container[] Array of containers
     */
-    public function getContainers($nParentId)
+    public function getContainers($parent)
     {
         $xmlContainers = $this->sendRequest(array(
-            'req_type' => 'containers',
-            'parent_id' => $nParentId,
+            'req_type'  => 'containers',
+            'parent_id' => $this->extractId($parent),
             'select_it' => 0
         ));
+
         $arContainers = array();
         foreach ($xmlContainers->containers->container as $xmlContainer) {
             $container = new Services_MediaTomb_Container($xmlContainer);
@@ -325,11 +434,18 @@ class Services_MediaTomb
 
 
 
-    public function getDetailledItem($nId)
+    /**
+    * Returns the "real" object for the given item id.
+    *
+    * @param mixed $item Item ID or item object
+    *
+    * @return Services_MediaTomb_ItemBase Item
+    */
+    public function getDetailledItem($item)
     {
         $xmlItem = $this->sendRequest(array(
             'req_type'  => 'edit_load',
-            'object_id' => $nId
+            'object_id' => $this->extractId($item)
         ));
 
         $strClass = self::getItemClass((int)$xmlItem->item->objType);
@@ -378,6 +494,8 @@ class Services_MediaTomb
     * Returns the item in the given path,
     * e.g. 'Audio/Albums/Maria Taylor/All Songs/A Good Start'
     *
+    * @param string $strPath Full path to the item
+    *
     * @return Services_MediaTomb_ItemBase Null if not found
     */
     public function getItemByPath($strPath)
@@ -401,18 +519,25 @@ class Services_MediaTomb
 
 
     /**
-    * Returns an array of children containers for the given ID
+    * Returns an array of children containers for the given parent item
+    *
+    * @param mixed   $parent     Parent item (or item id) to get containers for
+    * @param integer $nStart     Position of first item to retrieve
+    * @param integer $nCount     Number of items to retrieve
+    * @param boolean $bDetailled If the simple item only, or the "real" item
+    *                             shall be returned
     *
     * @return Services_MediaTomb_Container[] Array of containers
     */
-    public function getItems($nId, $nStart = 0, $nCount = 25, $bDetailled = true)
+    public function getItems($parent, $nStart = 0, $nCount = 25, $bDetailled = true)
     {
         $xmlItems = $this->sendRequest(array(
             'req_type'  => 'items',
-            'parent_id' => $nId,
+            'parent_id' => $this->extractId($parent),
             'start'     => $nStart,
             'count'     => $nCount
         ));
+
         $arItems = array();
         foreach ($xmlItems->items->item as $xmlItem) {
             $simpleItem = new Services_MediaTomb_SimpleItem($xmlItem);
@@ -438,8 +563,9 @@ class Services_MediaTomb
     *
     * @return array Array of key-value pairs (not urlencoded)
     */
-    protected function getSaveProperties(Services_MediaTomb_ItemBase $item, $bSave = true)
-    {
+    protected function getSaveProperties(
+        Services_MediaTomb_ItemBase $item, $bSave = true
+    ) {
         $strPropsVar = $bSave ? 'arSaveProps' : 'arCreateProps';
 
         if (!isset($item->$strPropsVar)) {
@@ -476,18 +602,18 @@ class Services_MediaTomb
 
     /**
     * Returns a single container item that has the given title
-    * and has the given parent id.
+    * and has the given parent item/id.
     *
-    * @param integer $nId      Parent ID
-    * @param string  $strTitle Title of container that shall be returned
+    * @param mixed  $parent   Parent object or ID
+    * @param string $strTitle Title of container that shall be returned
     *
     * @return Services_MediaTomb_Container or null if not found
     */
-    public function getSingleContainer($nId, $strTitle)
+    public function getSingleContainer($parent, $strTitle)
     {
         $xmlContainers = $this->sendRequest(array(
-            'req_type' => 'containers',
-            'parent_id' => $nId,
+            'req_type'  => 'containers',
+            'parent_id' => $this->extractId($parent),
             'select_it' => 0
         ));
         foreach ($xmlContainers->containers->container as $xmlContainer) {
@@ -505,27 +631,29 @@ class Services_MediaTomb
 
     /**
     * Returns a single item item that has the given title
-    * and the given parent id.
+    * and the given parent item/id.
     *
-    * @param integer $nId        Parent ID
+    * @param mixed   $parent     Parent object or ID
     * @param string  $strTitle   Title of item that shall be returned
     * @param boolean $bDetailled If the detailled item shall be returned
     *
     * @return Services_MediaTomb_ItemBase or null if not found
     */
-    public function getSingleItem($nId, $strTitle, $bDetailled = true)
+    public function getSingleItem($parent, $strTitle, $bDetailled = true)
     {
         $bHaveMore = true;
         $nStart    = 0;
         $nCount    = 25;
+        $nParentId = $this->extractId($parent);
 
         while ($bHaveMore) {
             $xmlItems = $this->sendRequest(array(
                 'req_type'  => 'items',
-                'parent_id' => $nId,
+                'parent_id' => $nParentId,
                 'start'     => $nStart,
                 'count'     => $nCount
             ));
+
             $arItems = array();
             foreach ($xmlItems->items->item as $xmlItem) {
                 if ((string)$xmlItem->title == $strTitle) {
@@ -539,8 +667,8 @@ class Services_MediaTomb
                 }
             }
 
-            $nStart += $nCount;
-            $nTotal = (int)$xmlItems->items['totalMatches'];
+            $nStart   += $nCount;
+            $nTotal    = (int)$xmlItems->items['totalMatches'];
             $bHaveMore = $nTotal >= $nStart;
         }
 
@@ -561,6 +689,12 @@ class Services_MediaTomb
     */
     public function saveItem(Services_MediaTomb_ItemBase $item)
     {
+        if ($item->id === null) {
+            throw new Services_MediaTomb_Exception(
+                'Only existing items can be saved'
+            );
+        }
+
         $arParams = array_merge(
             array(
                 'req_type'  => 'edit_save',

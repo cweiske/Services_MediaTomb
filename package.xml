@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package version="2.0" xmlns="http://pear.php.net/dtd/package-2.0"
+ xmlns:tasks="http://pear.php.net/dtd/tasks-1.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Services_MediaTomb</name>
+ <channel>pear.php.net</channel>
+ <summary>PHP library to access MediaTomb UPnP server</summary>
+ <description>
+  With this class you can access the web interface of an MediaTomb
+  UPnP server programmatically. List containers and items,
+  create links and more.
+ </description>
+
+ <lead>
+  <name>Christian Weiske</name>
+  <user>cweiske</user>
+  <email>cweiske@php.net</email>
+  <active>yes</active>
+ </lead>
+
+ <date>2008-05-12</date>
+ <time>23:42:00</time>
+ <version>
+  <release>0.0.1</release>
+  <api>0.0.1</api>
+ </version>
+ <stability>
+  <release>alpha</release>
+  <api>alpha</api>
+ </stability>
+ <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+ <notes>
+  First pear packaged version
+ </notes>
+
+ <contents>
+  <dir name="/">
+
+  <dir name="src">
+   <dir name="Services">
+    <file role="php" name="MediaTomb.php" />
+    <dir name="MediaTomb">
+     <file role="php" name="Container.php" />
+     <file role="php" name="Exception.php" />
+     <file role="php" name="ExternalLink.php" />
+     <file role="php" name="ItemBase.php" />
+     <file role="php" name="Item.php" />
+     <file role="php" name="SimpleItem.php" />
+    </dir>
+   </dir>
+  </dir>
+
+  <dir name="tests">
+   <file role="test" name="config.php.dist" />
+   <dir name="Services">
+    <file role="test" name="MediaTombTest.php" />
+   </dir>
+  </dir>
+ </dir>
+ </contents>
+
+ <dependencies>
+  <required>
+   <php>
+    <min>5.2.5</min>
+   </php>
+   <pearinstaller>
+    <min>1.7.1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+
+
+ <phprelease>
+  <filelist>
+   <install name="src/Services/MediaTomb.php"              as="Services/MediaTomb.php" />
+   <install name="src/Services/MediaTomb/Container.php"    as="Services/MediaTomb/Container.php" />
+   <install name="src/Services/MediaTomb/Exception.php"    as="Services/MediaTomb/Exception.php" />
+   <install name="src/Services/MediaTomb/ExternalLink.php" as="Services/MediaTomb/ExternalLink.php" />
+   <install name="src/Services/MediaTomb/ItemBase.php"     as="Services/MediaTomb/ItemBase.php" />
+   <install name="src/Services/MediaTomb/Item.php"         as="Services/MediaTomb/Item.php" />
+   <install name="src/Services/MediaTomb/SimpleItem.php"   as="Services/MediaTomb/SimpleItem.php" />
+
+   <install name="tests/config.php.dist"                   as="config.php.dist" />
+   <install name="tests/Services/MediaTombTest.php"        as="Services/MediaTombTest.php" />
+  </filelist>
+ </phprelease>
+
+ <changelog>
+
+  <release>
+   <version>
+    <release>0.0.1</release>
+    <api>0.0.1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-05-12</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <notes>
+    First pear packaged version
+   </notes>
+  </release>
+
+ </changelog>
+</package>

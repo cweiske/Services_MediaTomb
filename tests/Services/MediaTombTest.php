@@ -268,13 +268,49 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetItems().
+     *
      */
-    public function testGetItems() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+    public function testGetItems()
+    {
+        $utcon = $this->object->createContainerByPath('unittest/testGetItems');
+        $this->object->createExternalLink(
+            $utcon->id, 'testGetItems1', 'http://example.org/testGetItems1',
+            'desc', 'text/plain'
         );
+        $this->object->createExternalLink(
+            $utcon->id, 'testGetItems2', 'http://example.org/testGetItems1',
+            'desc', 'text/plain'
+        );
+        $this->object->createExternalLink(
+            $utcon, 'testGetItems3', 'http://example.org/testGetItems1',
+            'desc', 'text/plain'
+        );
+
+        //id
+        $arItems = $this->object->getItems($utcon->id, 0, 10);
+        $this->assertEquals(3, count($arItems));
+        $arFound = array();
+        foreach ($arItems as $item) {
+            $this->assertType('Services_MediaTomb_ExternalLink', $item);
+            $arFound[$item->title] = true;
+        }
+
+        $this->assertTrue(isset($arFound['testGetItems1']));
+        $this->assertTrue(isset($arFound['testGetItems2']));
+        $this->assertTrue(isset($arFound['testGetItems3']));
+
+        //object
+        $arItems = $this->object->getItems($utcon, 0, 10);
+        $this->assertEquals(3, count($arItems));
+        $arFound = array();
+        foreach ($arItems as $item) {
+            $this->assertType('Services_MediaTomb_ExternalLink', $item);
+            $arFound[$item->title] = true;
+        }
+
+        $this->assertTrue(isset($arFound['testGetItems1']));
+        $this->assertTrue(isset($arFound['testGetItems2']));
+        $this->assertTrue(isset($arFound['testGetItems3']));
     }
 
     /**
@@ -289,11 +325,19 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         );
         $this->assertType('Services_MediaTomb_Container', $utcon2);
 
+        //id
         $utcon3 = $this->object->getSingleContainer(
             $utcon2->id, 'testGetSingleContainer'
         );
         $this->assertType('Services_MediaTomb_Container', $utcon3);
         $this->assertEquals($utcon->id, $utcon3->id);
+
+        //object
+        $utcon4 = $this->object->getSingleContainer(
+            $utcon2, 'testGetSingleContainer'
+        );
+        $this->assertType('Services_MediaTomb_Container', $utcon4);
+        $this->assertEquals($utcon->id, $utcon4->id);
 
         //non-existing item
         $this->assertNull(
@@ -348,14 +392,23 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSaveItem().
+     * use saveItem() to change a container
      */
-    public function testSaveItem() {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+    public function testSaveItemAContainer()
+    {
+        $utcon = $this->object->createContainerByPath('unittest/testSaveItem');
+        $utcon->title = 'testSaveItem2';
+        $utcon->save();
+
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $this->object->getContainerByPath('unittest/testSaveItem2')
+        );
+        $this->assertNull(
+            $this->object->getContainerByPath('unittest/testSaveItem')
         );
     }
+
 }
 
 // Call Services_MediaTombTest::main() if this source file is executed directly.
