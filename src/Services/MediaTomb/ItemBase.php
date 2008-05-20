@@ -67,10 +67,20 @@ abstract class Services_MediaTomb_ItemBase
 
 
 
-    public function setTomb(Services_MediaTomb $tomb)
+    /**
+    * Deletes this object in mediatomb
+    *
+    * @return boolean True if all went well
+    */
+    public function delete()
     {
-        $this->tomb = $tomb;
-    }//public function setTomb(..)
+        $retval = $this->tomb->deleteItem($this);
+
+        //prevent saving after deletion
+        $this->id = null;
+
+        return $retval;
+    }//public function delete()
 
 
 
@@ -78,6 +88,20 @@ abstract class Services_MediaTomb_ItemBase
     {
         $this->tomb->saveItem($this);
     }//public function save()
+
+
+
+    /**
+    * Sets the internal mediatomb object
+    *
+    * @param Services_MediaTomb $tomb MediaTomb object
+    *
+    * @return void
+    */
+    public function setTomb(Services_MediaTomb $tomb)
+    {
+        $this->tomb = $tomb;
+    }//public function setTomb(..)
 
 }//class Services_MediaTomb_ItemBase
 

@@ -368,7 +368,7 @@ class Services_MediaTomb
     *
     * @return boolean True if all went well
     */
-    public function delete($item)
+    public function deleteItem($item)
     {
         $this->sendRequest(array(
             'req_type'  => 'remove',
@@ -377,7 +377,7 @@ class Services_MediaTomb
         $this->workaroundTimingBug();
 
         return true;
-    }//public function delete(Services_MediaTomb_ItemBase $item)
+    }//public function deleteItem(..)
 
 
 
@@ -412,7 +412,8 @@ class Services_MediaTomb
     *
     * @param mixed $parent Parental object (or ID)
     *
-    * @return Services_MediaTomb_Container[] Array of containers
+    * @return Services_MediaTomb_Container[] Array of containers.
+    *                                        Key is the container id
     */
     public function getContainers($parent)
     {

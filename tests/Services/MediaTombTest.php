@@ -80,7 +80,7 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         //remove unittest container
         $cont = $this->object->getContainerByPath('unittest');
         if ($cont instanceof Services_MediaTomb_Container) {
-            $this->object->delete($cont);
+            $cont->delete();
         }
     }
 

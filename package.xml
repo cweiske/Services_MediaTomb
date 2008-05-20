@@ -4,7 +4,7 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Services_MediaTomb</name>
- <channel>pear.php.net</channel>
+ <channel>zustellzentrum.cweiske.de</channel>
  <summary>PHP library to access MediaTomb UPnP server</summary>
  <description>
   With this class you can access the web interface of an MediaTomb
@@ -19,11 +19,11 @@
   <active>yes</active>
  </lead>
 
- <date>2008-05-12</date>
+ <date>2008-05-20</date>
  <time>23:42:00</time>
  <version>
-  <release>0.0.1</release>
-  <api>0.0.1</api>
+  <release>0.0.2</release>
+  <api>0.0.2</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -31,7 +31,8 @@
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
  <notes>
-  First pear packaged version
+  - Services_MediaTomb::delete() has been renamed to deleteItem()
+  - Services_MediaTomb_ItemBase gets delete() method
  </notes>
 
  <contents>
@@ -88,6 +89,22 @@
  </phprelease>
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.0.2</release>
+    <api>0.0.2</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-05-20</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <notes>
+    First pear packaged version
+   </notes>
+  </release>
 
   <release>
    <version>
