@@ -161,6 +161,14 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $utcon2 = $this->object->getContainerByPath('unittest/odins/dwa/tri');
         $this->assertType('Services_MediaTomb_Container', $utcon2);
         $this->assertEquals($utcon->id, $utcon2->id);
+
+        //test with slash at beginning
+        $utcon3 = $this->object->createContainerByPath('/unittest/odins/dwa/tchetirje');
+        $this->assertType('Services_MediaTomb_Container', $utcon);
+
+        $utcon4 = $this->object->getContainerByPath('/unittest/odins/dwa/tchetirje');
+        $this->assertType('Services_MediaTomb_Container', $utcon4);
+        $this->assertEquals($utcon3->id, $utcon4->id);
     }
 
     /**
@@ -200,6 +208,31 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
             'Services_MediaTomb_Container',
             $this->object->getContainerByPath('unittest/one/two/three')
         );
+
+        //test with slash at beginning
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $this->object->createContainerByPath('/unittest/one/two/four')
+        );
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $this->object->getContainerByPath('/unittest/one/two/four')
+        );
+
+        //test root
+        $rootcontainer = $this->object->getContainerByPath('');
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $rootcontainer
+        );
+        $this->assertEquals(0, $rootcontainer->id);
+
+        $rootcontainer = $this->object->getContainerByPath('/');
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $rootcontainer
+        );
+        $this->assertEquals(0, $rootcontainer->id);
     }
 
     /**
@@ -312,6 +345,22 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(isset($arFound['testGetItems2']));
         $this->assertTrue(isset($arFound['testGetItems3']));
     }
+
+
+
+    public function testGetRootContainer()
+    {
+        $cont = $this->object->getRootContainer();
+        $this->assertNotNull($cont);
+        $this->assertEquals(0, $cont->id);
+
+        $containers = $cont->getContainers();
+        $this->assertNotNull($containers);
+        $this->assertType('array', $containers);
+        $this->assertTrue(count($containers) > 0);
+    }
+
+
 
     /**
      *

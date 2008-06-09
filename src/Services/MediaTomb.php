@@ -112,6 +112,8 @@ class Services_MediaTomb
     * @param mixed $item Item object or ID
     *
     * @return integer ID
+    *
+    * @throws Services_MediaTomb_Exception When $item is no item nor an ID
     */
     protected function extractId($item)
     {
@@ -294,11 +296,22 @@ class Services_MediaTomb
     *                           shall be created
     * @param boolean $bReturn  If the newly created container should be returned
     *
-    * @return Services_MediaTomb_Container
+    * @return Services_MediaTomb_Container Newly created container, or NULL
+    *                                      if $bReturn is false
+    *
+    * @throws Services_MediaTomb_Exception When container creation fails
     */
     public function createContainerByPath(
         $strPath, $bParents = true, $bReturn = true
     ) {
+        if ($strPath == '' || $strPath == '/') {
+            return $bReturn ? $this->getRootContainer() : null;
+        }
+
+        if ($strPath{0} == '/') {
+            $strPath = substr($strPath, 1);
+        }
+
         $arParts   = explode('/', $strPath);
         $nParentId = 0;
         foreach ($arParts as $strName) {
@@ -391,6 +404,14 @@ class Services_MediaTomb
     */
     public function getContainerByPath($strPath)
     {
+        if ($strPath == '' || $strPath == '/') {
+            return $this->getRootContainer();
+        }
+
+        if ($strPath{0} == '/') {
+            $strPath = substr($strPath, 1);
+        }
+
         $arParts   = explode('/', $strPath);
         $nParentId = 0;
         foreach ($arParts as $strName) {
@@ -441,6 +462,8 @@ class Services_MediaTomb
     * @param mixed $item Item ID or item object
     *
     * @return Services_MediaTomb_ItemBase Item
+    *
+    * @throws Services_MediaTomb_Exception When $item is of an unknown class
     */
     public function getDetailledItem($item)
     {
@@ -461,33 +484,6 @@ class Services_MediaTomb
         $obj->setTomb($this);
         return $obj;
     }//public function getDetailledItem($nId)
-
-
-
-    /**
-    * Returns the Services_MediaTomb_* class for the given
-    * item type.
-    *
-    * @param integer $nType Type ID
-    *
-    * @return string class that can be instantiated, or NULL if not found
-    */
-    public static function getItemClass($nType)
-    {
-        static $arClasses = array(
-            1 => 'Services_MediaTomb_Container',
-            2 => 'Services_MediaTomb_Item',
-            //6 => 'Services_MediaTomb_ActiveItem',
-            10 => 'Services_MediaTomb_ExternalLink',
-            //26 => 'Services_MediaTomb_InternalLink',
-        );
-
-        if (!isset($arClasses[$nType])) {
-            return null;
-        }
-
-        return $arClasses[$nType];
-    }//public static function getItemClass($nType)
 
 
 
@@ -516,6 +512,33 @@ class Services_MediaTomb
 
         return $this->getSingleItem($container->id, $strItemName);
     }//public function getContainerByPath(..)
+
+
+
+    /**
+    * Returns the Services_MediaTomb_* class for the given
+    * item type.
+    *
+    * @param integer $nType Type ID
+    *
+    * @return string class that can be instantiated, or NULL if not found
+    */
+    public static function getItemClass($nType)
+    {
+        static $arClasses = array(
+            1 => 'Services_MediaTomb_Container',
+            2 => 'Services_MediaTomb_Item',
+            //6 => 'Services_MediaTomb_ActiveItem',
+            10 => 'Services_MediaTomb_ExternalLink',
+            //26 => 'Services_MediaTomb_InternalLink',
+        );
+
+        if (!isset($arClasses[$nType])) {
+            return null;
+        }
+
+        return $arClasses[$nType];
+    }//public static function getItemClass($nType)
 
 
 
@@ -556,6 +579,24 @@ class Services_MediaTomb
 
 
     /**
+    * Returns the root container which contains everything.
+    *
+    * @return Services_MediaTomb_Container Root container object
+    */
+    public function getRootContainer()
+    {
+        $container = new Services_MediaTomb_Container();
+        $container->setTomb($this);
+
+        $container->id    = 0;
+        $container->title = '/';
+
+        return $container;
+    }//public function getRootContainer()
+
+
+
+    /**
     * Creates an array of parameters to send to the mediatomb server
     * with all values of the item that can be saved.
     *
@@ -563,6 +604,10 @@ class Services_MediaTomb
     * @param boolean                     $bSave If we save (true) or create (false)
     *
     * @return array Array of key-value pairs (not urlencoded)
+    *
+    * @throws Services_MediaTomb_Exception When $item contains no properties
+    *                                      that shall be saved, the ID or a
+    *                                      value to save is missing
     */
     protected function getSaveProperties(
         Services_MediaTomb_ItemBase $item, $bSave = true
