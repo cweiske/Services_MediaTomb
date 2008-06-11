@@ -428,6 +428,58 @@ class Services_MediaTomb
 
 
     /**
+    * Returns an array of containers for the given path,
+    * e.g. 'Audio/Albums/Maria Taylor' would return an array
+    * of containers containing
+    * - the root container
+    * - Audio
+    * - Albums
+    * - Maria Taylor
+    *
+    * First array value is the root container, last the most deeply nested one.
+    *
+    * @param string  $strPath         Full path
+    * @param boolean $bIgnoreNotFound If the full path cannot be found,
+    *                                 return found path parts.
+    *
+    * @return Services_MediaTomb_Container[] Array of containers,
+    *                                        null if not found
+    */
+    public function getContainersByPath($strPath, $bIgnoreNotFound = false)
+    {
+        $arContainers = array(
+            $this->getRootContainer()
+        );
+
+        if ($strPath == '' || $strPath == '/') {
+            return $arContainers;
+        }
+
+        if ($strPath{0} == '/') {
+            $strPath = substr($strPath, 1);
+        }
+
+        $arParts   = explode('/', $strPath);
+        $nParentId = 0;
+        foreach ($arParts as $strName) {
+            $container = $this->getSingleContainer($nParentId, $strName);
+            if ($container === null) {
+                if ($bIgnoreNotFound) {
+                    return $arContainers;
+                } else {
+                    return null;
+                }
+            }
+            $arContainers[] = $container;
+            $nParentId      = $container->id;
+        }
+
+        return $arContainers;
+    }//public function getContainersByPath(..)
+
+
+
+    /**
     * Returns an array of children containers for the given ID/item.
     * 0 is the root id.
     *

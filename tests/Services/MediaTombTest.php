@@ -238,6 +238,37 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     /**
      *
      */
+    public function testGetContainersByPath()
+    {
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $this->object->createContainerByPath('unittest/one/two/three')
+        );
+
+        $arContainers = $this->object->getContainersByPath('unittest/one/two/three');
+        $this->assertType('array', $arContainers);
+        $this->assertEquals(0, array_shift($arContainers)->id);
+        $this->assertEquals(
+            $this->object->getContainerByPath('unittest')->id,
+            array_shift($arContainers)->id
+        );
+        $this->assertEquals(
+            $this->object->getContainerByPath('unittest/one')->id,
+            array_shift($arContainers)->id
+        );
+        $this->assertEquals(
+            $this->object->getContainerByPath('unittest/one/two')->id,
+            array_shift($arContainers)->id
+        );
+        $this->assertEquals(
+            $this->object->getContainerByPath('unittest/one/two/three')->id,
+            array_shift($arContainers)->id
+        );
+    }
+
+    /**
+     *
+     */
     public function testGetContainers()
     {
         $arContainers = $this->object->getContainers(0);
