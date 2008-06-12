@@ -81,7 +81,8 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     /**
     * Returns an array of children containers for the given ID.
     *
-    * @return Services_MediaTomb_Container[] Array of containers
+    * @return Services_MediaTomb_Container[] Array of containers.
+    *                                        Key is the container id
     */
     public function getContainers()
     {

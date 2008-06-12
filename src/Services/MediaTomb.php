@@ -125,7 +125,7 @@ class Services_MediaTomb
             return $item->id;
         } else {
             throw new Services_MediaTomb_Exception(
-                'Passed ' . get_type($item) . ' is no item or ID'
+                'Passed ' . gettype($item) . ' is no item or ID'
             );
         }
     }//protected function extractId($item)
