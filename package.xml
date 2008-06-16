@@ -19,20 +19,24 @@
   <active>yes</active>
  </lead>
 
- <date>2008-05-20</date>
+ <date>2008-06-14</date>
  <time>23:42:00</time>
  <version>
-  <release>0.0.2</release>
-  <api>0.0.2</api>
+  <release>0.0.5</release>
+  <api>0.0.5</api>
  </version>
  <stability>
   <release>alpha</release>
   <api>alpha</api>
  </stability>
- <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+ <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
  <notes>
-  - Services_MediaTomb::delete() has been renamed to deleteItem()
-  - Services_MediaTomb_ItemBase gets delete() method
+  - Fix bug when throwing exception
+  - Throw exception when connection to mediatomb can't be established
+  - add getContainersByPath()
+  - Docblock enhancements
+  - Better root directory handling in creation/getter methods
+  - add getRootContainer()
  </notes>
 
  <contents>
@@ -92,6 +96,27 @@
 
   <release>
    <version>
+    <release>0.0.5</release>
+    <api>0.0.5</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-06-14</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <notes>
+  - Fix bug when throwing exception
+  - Throw exception when connection to mediatomb can't be established
+  - add getContainersByPath()
+  - Docblock enhancements
+  - Better root directory handling in creation/getter methods
+  - add getRootContainer()
+   </notes>
+  </release>
+
+  <release>
+   <version>
     <release>0.0.2</release>
     <api>0.0.2</api>
    </version>
@@ -102,7 +127,8 @@
    <date>2008-05-20</date>
    <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
    <notes>
-    First pear packaged version
+  - Services_MediaTomb::delete() has been renamed to deleteItem()
+  - Services_MediaTomb_ItemBase gets delete() method
    </notes>
   </release>
 

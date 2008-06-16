@@ -125,7 +125,7 @@ class Services_MediaTomb
             return $item->id;
         } else {
             throw new Services_MediaTomb_Exception(
-                'Passed ' . gettype($item) . ' is no item or ID'
+                'Passed ' . gettype($item) . ' is no item or ID.'
             );
         }
     }//protected function extractId($item)
@@ -162,7 +162,7 @@ class Services_MediaTomb
             ));
         } catch (Services_MediaTomb_ServerException $e) {
             throw new Services_MediaTomb_Exception(
-                $e->getMessage, Services_MediaTomb_Exception::LOGIN
+                $e->getMessage(), Services_MediaTomb_Exception::LOGIN
             );
         }
     }//protected function login($username, $password)
@@ -178,7 +178,7 @@ class Services_MediaTomb
     *
     * @return SimpleXMLElement XML object of return value
     *
-    * @throws Services_MediaTomb_Exception In case an error is returned
+    * @throws Services_MediaTomb_Exception In case an error occurs
     */
     protected function sendRequest($arParams)
     {
@@ -188,9 +188,16 @@ class Services_MediaTomb
             $arParamStrings[] = urlencode($strKey) . '=' . urlencode($strValue);
         }
 
-        $xml = new SimpleXMLElement(file_get_contents(
+        $strXml = file_get_contents(
             $this->strInterfaceUrl . implode('&', $arParamStrings)
-        ));
+        );
+        if ($strXml === false) {
+            throw new Services_MediaTomb_ServerException(
+                'Connection to MediaTomb server failed.'
+            );
+        }
+
+        $xml = new SimpleXMLElement($strXml);
 
         if (isset($xml->error)) {
             throw new Services_MediaTomb_ServerException((string)$xml->error);
@@ -323,7 +330,7 @@ class Services_MediaTomb
 
             if (!$container instanceof Services_MediaTomb_Container) {
                 throw new Services_MediaTomb_Exception(
-                    'Container creation error: ' . $strName . ' (' . $strPath . ')'
+                    'Container creation error: ' . $strName . ' (' . $strPath . ').'
                 );
             }
             $nParentId = $container->id;
@@ -527,7 +534,7 @@ class Services_MediaTomb
         $strClass = self::getItemClass((int)$xmlItem->item->objType);
         if ($strClass === null) {
             throw new Services_MediaTomb_Exception(
-                'Unsupported object class ' . $xmlItem->item->objType,
+                'Unsupported object class ' . $xmlItem->item->objType . '.',
                 Services_MediaTomb_Exception::UNSUPPORTED_ITEM
             );
         }
@@ -674,7 +681,7 @@ class Services_MediaTomb
         }
 
         if ($bSave && $item->id == 0) {
-            throw new Services_MediaTomb_Exception('Object has no ID');
+            throw new Services_MediaTomb_Exception('Object has no ID.');
         }
 
         $arParams = array();
@@ -687,7 +694,7 @@ class Services_MediaTomb
 
             if ($item->$strPropname === null) {
                 throw new Services_MediaTomb_Exception(
-                    'Value ' . $strPropname . ' has not been set'
+                    'Value ' . $strPropname . ' has not been set.'
                 );
             }
             $arParams[$strParamKey] = $item->$strPropname;
@@ -789,7 +796,7 @@ class Services_MediaTomb
     {
         if ($item->id === null) {
             throw new Services_MediaTomb_Exception(
-                'Only existing items can be saved'
+                'Only existing items can be saved.'
             );
         }
 
