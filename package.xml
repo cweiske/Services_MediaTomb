@@ -19,11 +19,11 @@
   <active>yes</active>
  </lead>
 
- <date>2008-06-14</date>
+ <date>2008-07-08</date>
  <time>23:42:00</time>
  <version>
-  <release>0.0.5</release>
-  <api>0.0.5</api>
+  <release>0.0.6</release>
+  <api>0.0.6</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -31,16 +31,11 @@
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
  <notes>
-  - Fix bug when throwing exception
-  - Throw exception when connection to mediatomb can't be established
-  - add getContainersByPath()
-  - Docblock enhancements
-  - Better root directory handling in creation/getter methods
-  - add getRootContainer()
+  - add add() and encodePath()/decodePath() to API
  </notes>
 
  <contents>
-  <dir name="/">
+ <dir name="/">
 
   <dir name="src">
    <dir name="Services">
@@ -60,6 +55,9 @@
    <file role="test" name="config.php.dist" />
    <dir name="Services">
     <file role="test" name="MediaTombTest.php" />
+    <dir name="MediaTombTest">
+      <file role="test" name="MediaTombMock.php" />
+    </dir>
    </dir>
   </dir>
  </dir>
@@ -92,7 +90,24 @@
   </filelist>
  </phprelease>
 
+
  <changelog>
+
+  <release>
+   <version>
+    <release>0.0.6</release>
+    <api>0.0.6</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-07-08</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <notes>
+  - add add() and encodePath()/decodePath() to API
+   </notes>
+  </release>
 
   <release>
    <version>

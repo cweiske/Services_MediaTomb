@@ -102,7 +102,45 @@ class Services_MediaTomb
             'http://' . $this->ip . ':' . $this->port
             . '/content/interface?';
         $this->login($username, $password);
-    }//public function __construct($username, $password, $ip, $port)
+    }//public function __construct(..)
+
+
+
+    /**
+    * Decodes a path transmitted via an URL into a readable
+    * name.
+    *
+    * @param string $path Encoded file or directory path
+    *
+    * @return string Plain path string
+    */
+    protected static function decodePath($encpath)
+    {
+        $strDecoded = '';
+        foreach (str_split($encpath, 2) as $num) {
+            $strDecoded .= chr(hexdec($num));
+        }
+        return $strDecoded;
+    }//protected static function decodePath(..)
+
+
+
+    /**
+    * Encodes a file or directory path into a string that can be used as
+    * parameter for sendRequest().
+    *
+    * @param string $path File or directory path
+    *
+    * @return string Encoded path string
+    */
+    protected static function encodePath($path)
+    {
+        $strEncoded = '';
+        foreach (str_split($path, 1) as $char) {
+            $strEncoded .= dechex(ord($char));
+        }
+        return $strEncoded;
+    }//protected static function encodePath(..)
 
 
 
@@ -128,7 +166,7 @@ class Services_MediaTomb
                 'Passed ' . gettype($item) . ' is no item or ID.'
             );
         }
-    }//protected function extractId($item)
+    }//protected function extractId(..)
 
 
 
@@ -165,7 +203,7 @@ class Services_MediaTomb
                 $e->getMessage(), Services_MediaTomb_Exception::LOGIN
             );
         }
-    }//protected function login($username, $password)
+    }//protected function login(..)
 
 
 
@@ -204,7 +242,7 @@ class Services_MediaTomb
         }
 
         return $xml;
-    }//protected function sendRequest($arParams)
+    }//protected function sendRequest(..)
 
 
 
@@ -226,6 +264,29 @@ class Services_MediaTomb
 
 
     /**
+    * Add a file or directory to the mediatomb database.
+    *
+    * @param string $path Full absolute path of file/directory to add
+    *
+    * @return boolean If all went well
+    */
+    public function add($path)
+    {
+        $arParams = array(
+            'req_type'  => 'add',
+            'object_id' => self::encodePath($path)
+        );
+
+        $this->sendRequest($arParams);
+
+        //as of version 0.11, mediatomb returns the same status for
+        //non-existing files and directories as for existing ones.
+        return true;
+    }//public function add(..)
+
+
+
+    /**
     * Creates the item in mediatomb
     *
     * @param mixed                       $parent  Parent container item (or ID)
@@ -234,7 +295,8 @@ class Services_MediaTomb
     * @param boolean                     $bReturn If the saved item shall
     *                                              be fetched and returned
     *
-    * @return Services_MediaTomb_ItemBase Newly created item
+    * @return Services_MediaTomb_ItemBase Newly created item, null if $bReturn
+    *                                     false
     */
     public function create(
         $parent, Services_MediaTomb_ItemBase $item, $bReturn = true

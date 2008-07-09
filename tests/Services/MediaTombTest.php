@@ -13,8 +13,17 @@ if (file_exists($strSrcDir)) {
 
 require_once 'Services/MediaTomb.php';
 
+$strMockPath = dirname(__FILE__) . '/MediaTombTest/MediaTombMock.php';
+if (file_exists($strMockPath)) {
+    require_once $strMockPath;
+} else {
+    require_once 'Services/MediaTombTest/MediaTombMock.php';
+}
+
 /**
  * Test class for Services_MediaTomb.
+ *
+ * @author Christian Weiske <cweiske@cweiske.de>
  */
 class Services_MediaTombTest extends PHPUnit_Framework_TestCase
 {
@@ -82,6 +91,28 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         if ($cont instanceof Services_MediaTomb_Container) {
             $cont->delete();
         }
+    }
+
+    public function testAddFile()
+    {
+        //TODO: try with real file and check if it works
+        $this->assertTrue(
+            $this->object->add(__FILE__)
+        );
+    }
+
+    public function testAddDirectory()
+    {
+        $this->assertTrue(
+            $this->object->add(dirname(__FILE__))
+        );
+
+        //doesn't return false as of mediatomb 0.11
+        /*
+        $this->assertFalse(
+            $this->object->add('/this/path/should/really/not/exist/on/your/box')
+        );
+        */
     }
 
     /**
@@ -169,6 +200,43 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $utcon4 = $this->object->getContainerByPath('/unittest/odins/dwa/tchetirje');
         $this->assertType('Services_MediaTomb_Container', $utcon4);
         $this->assertEquals($utcon3->id, $utcon4->id);
+    }
+
+    public function testDecodePath()
+    {
+        $this->assertEquals(
+            '/home/cweiske/Music/CDs/2raumwohnung/36 Grad',
+            Services_MediaTombTest_MediaTombMock::decodePath(
+                '2f686f6d652f63776569736b652f4d7'
+                . '57369632f4344732f327261756d776f'
+                . '686e756e672f33362047726164'
+            )
+        );
+    }
+
+    public function testEncodePath()
+    {
+        $this->assertEquals(
+              '2f686f6d652f63776569736b652f4d7'
+            . '57369632f4344732f327261756d776f'
+            . '686e756e672f33362047726164',
+            Services_MediaTombTest_MediaTombMock::encodePath(
+                '/home/cweiske/Music/CDs/2raumwohnung/36 Grad'
+            )
+        );
+    }
+
+    public function testEnDecodePath()
+    {
+        $str = '/path/to/my/files';
+        $this->assertEquals(
+            $str,
+            Services_MediaTombTest_MediaTombMock::decodePath(
+                Services_MediaTombTest_MediaTombMock::encodePath(
+                    $str
+                )
+            )
+        );
     }
 
     /**
