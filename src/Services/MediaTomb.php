@@ -15,6 +15,7 @@ require_once 'Services/MediaTomb/Exception.php';
 require_once 'Services/MediaTomb/Container.php';
 require_once 'Services/MediaTomb/ExternalLink.php';
 require_once 'Services/MediaTomb/Item.php';
+require_once 'Services/MediaTomb/ItemIterator.php';
 require_once 'Services/MediaTomb/SimpleItem.php';
 
 /**
@@ -59,7 +60,10 @@ class Services_MediaTomb
     protected $port = 49152;
 
     /**
-    * Full path to the AJAX interface on the server
+    * Full path to the AJAX interface on the server,
+    * including protocol, hostname, port and path.
+    *
+    * E.g. http://myhost:49152/content/interface?
     *
     * @var string
     */
@@ -69,13 +73,21 @@ class Services_MediaTomb
     * Array of key-value pairs that define parameters
     * that are sent with each request.
     *
+    * Session ID will be in here after login.
+    *
     * @var array
     */
     protected $arDefaultParams = array();
 
     /**
     * Weather to work around the mediatomb timing bug
-    * in 0.11.0 (#1962538)
+    * in 0.11.0 (#1962538).
+    *
+    * Since this happens on slow server machines only, you can
+    * disable it when you don't delete many things in a row or have a
+    * fast server.
+    *
+    * Affects deletion only.
     *
     * @var boolean
     */
@@ -85,12 +97,14 @@ class Services_MediaTomb
 
     /**
     * Create a new Services_MediaTomb instance and
-    * log into the server
+    * logs into the server.
     *
     * @param string  $username Server username
     * @param string  $password Password
     * @param string  $ip       IP address or hostname of server
     * @param integer $port     Server port number. May be omitted
+    *
+    * @throws Services_MediaTomb_Exception When login() fails.
     */
     public function __construct($username, $password, $ip, $port = null)
     {
@@ -109,6 +123,11 @@ class Services_MediaTomb
     /**
     * Decodes a path transmitted via an URL into a readable
     * name.
+    *
+    * For example,
+    *  2f706174682f66696c652e657874
+    * would return
+    *  /path/file.ext
     *
     * @param string $path Encoded file or directory path
     *
@@ -129,6 +148,11 @@ class Services_MediaTomb
     * Encodes a file or directory path into a string that can be used as
     * parameter for sendRequest().
     *
+    * For example,
+    *  /path/file.ext
+    * would return
+    *  2f706174682f66696c652e657874
+    *
     * @param string $path File or directory path
     *
     * @return string Encoded path string
@@ -146,8 +170,10 @@ class Services_MediaTomb
 
     /**
     * Returns the ID for the given item.
+    * If the passed $item parameter is already an integer ID, it will
+    * be returned without modification.
     *
-    * @param mixed $item Item object or ID
+    * @param mixed $item Item object or integer ID
     *
     * @return integer ID
     *
@@ -163,7 +189,8 @@ class Services_MediaTomb
             return $item->id;
         } else {
             throw new Services_MediaTomb_Exception(
-                'Passed ' . gettype($item) . ' is no item or ID.'
+                'Passed value ' . gettype($item) . ' is neither item nor ID.',
+                Services_MediaTomb_Exception::NO_ID
             );
         }
     }//protected function extractId(..)
@@ -231,14 +258,18 @@ class Services_MediaTomb
         );
         if ($strXml === false) {
             throw new Services_MediaTomb_ServerException(
-                'Connection to MediaTomb server failed.'
+                'Connection to MediaTomb server failed.',
+                Services_MediaTomb_ServerException::CANNOT_READ_XML
             );
         }
 
         $xml = new SimpleXMLElement($strXml);
 
         if (isset($xml->error)) {
-            throw new Services_MediaTomb_ServerException((string)$xml->error);
+            throw new Services_MediaTomb_ServerException(
+                (string)$xml->error,
+                Services_MediaTomb_ServerException::NORMAL_ERROR
+            );
         }
 
         return $xml;
@@ -392,7 +423,8 @@ class Services_MediaTomb
 
             if (!$container instanceof Services_MediaTomb_Container) {
                 throw new Services_MediaTomb_Exception(
-                    'Container creation error: ' . $strName . ' (' . $strPath . ').'
+                    'Container creation error: ' . $strName . ' (' . $strPath . ').',
+                    Services_MediaTomb_Exception::CONTAINER_CREATION_FAILED
                 );
             }
             $nParentId = $container->id;
@@ -479,6 +511,9 @@ class Services_MediaTomb
 
         if ($strPath{0} == '/') {
             $strPath = substr($strPath, 1);
+        }
+        if (substr($strPath, -1) == '/') {
+            $strPath = substr($strPath, 0, -1);
         }
 
         $arParts   = explode('/', $strPath);
@@ -664,7 +699,29 @@ class Services_MediaTomb
 
 
     /**
-    * Returns an array of children containers for the given parent item
+    * Creates and returns an item iterator to easily loop over the items
+    *
+    * @param mixed   $container  Parental container
+    * @param boolean $bDetailled If the simple item only, or the "real" item
+    *                             shall be returned
+    *
+    * @return Services_MediaTomb_ItemIterator
+    */
+    public function getItemIterator(
+        $container, $bDetailled = true, $nPageSize = null
+    ) {
+        //FIXME: load for path and id, too
+        return new Services_MediaTomb_ItemIterator(
+            $this, $this->extractId($container), $bDetailled, $nPageSize
+        );
+    }//public function getItemIterator($container)
+
+
+
+    /**
+    * Returns an array of children containers for the given parent item.
+    *
+    * Returning full (real, detailled) items costs one request per item.
     *
     * @param mixed   $parent     Parent item (or item id) to get containers for
     * @param integer $nStart     Position of first item to retrieve
@@ -672,7 +729,8 @@ class Services_MediaTomb
     * @param boolean $bDetailled If the simple item only, or the "real" item
     *                             shall be returned
     *
-    * @return Services_MediaTomb_Container[] Array of containers
+    * @return Services_MediaTomb_Item[] Array of items, Services_MediaTomb_Item (detailled)
+    *                                   or Services_MediaTomb_SimpleItem (not detailled)
     */
     public function getItems($parent, $nStart = 0, $nCount = 25, $bDetailled = true)
     {
@@ -738,12 +796,16 @@ class Services_MediaTomb
         if (!isset($item->$strPropsVar)) {
             throw new Services_MediaTomb_Exception(
                 'Item of class ' . get_class($item)
-                . ' defines no properties to be saved.'
+                . ' defines no properties to be saved.',
+                Services_MediaTomb_Exception::NO_SAVE_PROPS
             );
         }
 
         if ($bSave && $item->id == 0) {
-            throw new Services_MediaTomb_Exception('Object has no ID.');
+            throw new Services_MediaTomb_Exception(
+                'Object has no ID.',
+                Services_MediaTomb_Exception::OBJECT_HAS_NO_ID
+            );
         }
 
         $arParams = array();
@@ -756,7 +818,8 @@ class Services_MediaTomb
 
             if ($item->$strPropname === null) {
                 throw new Services_MediaTomb_Exception(
-                    'Value ' . $strPropname . ' has not been set.'
+                    'Value ' . $strPropname . ' has not been set.',
+                    Services_MediaTomb_Exception::PROP_NOT_SET
                 );
             }
             $arParams[$strParamKey] = $item->$strPropname;
@@ -858,7 +921,8 @@ class Services_MediaTomb
     {
         if ($item->id === null) {
             throw new Services_MediaTomb_Exception(
-                'Only existing items can be saved.'
+                'Only existing items can be saved.',
+                Services_MediaTomb_Exception::OBJECT_HAS_NO_ID
             );
         }
 

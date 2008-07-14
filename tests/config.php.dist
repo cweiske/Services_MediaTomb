@@ -4,5 +4,6 @@ $GLOBALS['Services_MediaTomb_UnittestConfig'] = array(
     'port'     => 'FIXME',
     'username' => 'FIXME',
     'password' => 'FIXME',
+    //'bWorkaroundTimingBug' => true
 );
 ?>

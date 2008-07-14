@@ -56,6 +56,18 @@ class Services_MediaTomb_ExternalLink extends Services_MediaTomb_ItemBase
         }
     }//public function __construct(..)
 
+
+
+    /**
+    * Returns the title
+    *
+    * @return string
+    */
+    public function __toString()
+    {
+        return $this->title;
+    }//public function __toString()
+
 }//class Services_MediaTomb_ExternalLink extends Services_MediaTomb_ItemBase
 
 ?>

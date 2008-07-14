@@ -93,13 +93,34 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
 
 
     /**
+    * Returns an item iterator object to easily loop over the items.
+    *
+    * @param boolean $bDetailled If the simple item only, or the "real" item
+    *                             shall be returned
+    *
+    * @return Services_MediaTomb_ItemIterator
+    */
+    public function getItemIterator($bDetailled = true, $nPageSize = null)
+    {
+        return $this->tomb->getItemIterator($this, $bDetailled, $nPageSize);
+    }//public function getItemIterator()
+
+
+
+    /**
     * Returns an array of children containers for the given ID
     *
-    * @return Services_MediaTomb_Item[] Array of items
+    * @param integer $nStart     Position of first item to retrieve
+    * @param integer $nCount     Number of items to retrieve
+    * @param boolean $bDetailled If the simple item only, or the "real" item
+    *                             shall be returned
+    *
+    * @return Services_MediaTomb_Item[] Array of items, Services_MediaTomb_Item (detailled)
+    *                                   or Services_MediaTomb_SimpleItem (not detailled)
     */
-    public function getItems($nStart = 0, $nCount = 25)
+    public function getItems($nStart = 0, $nCount = 25, $bDetailled = true)
     {
-        return $this->tomb->getItems($this->id, $nStart, $nCount);
+        return $this->tomb->getItems($this->id, $nStart, $nCount, $bDetailled);
     }//public function getItems($nStart = 0, $nCount = 25)
 
 
@@ -132,6 +153,18 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     {
         return $this->tomb->getSingleItem($this->id, $strTitle, $bDetailled);
     }//public function getSingleItem(..)
+
+
+
+    /**
+    * Returns the title
+    *
+    * @return string
+    */
+    public function __toString()
+    {
+        return $this->title;
+    }//public function __toString()
 
 }//class Services_MediaTomb_Container extends Services_MediaTomb_Item
 

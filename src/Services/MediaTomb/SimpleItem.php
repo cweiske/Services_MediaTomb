@@ -18,6 +18,12 @@ require_once 'Services/MediaTomb/ItemBase.php';
 class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
 {
     public $title = null;
+
+    /**
+    * URL how to retrieve item via HTTP
+    *
+    * @var string
+    */
     public $url   = null;
 
 
@@ -44,7 +50,18 @@ class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
         return $this->tomb->getDetailledItem($this->id);
     }//public function getDetailledItem()
 
-}//class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
 
+
+    /**
+    * Returns the title
+    *
+    * @return string
+    */
+    public function __toString()
+    {
+        return $this->title;
+    }//public function __toString()
+
+}//class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
 
 ?>

@@ -76,6 +76,10 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
             $GLOBALS['Services_MediaTomb_UnittestConfig']['host'],
             $GLOBALS['Services_MediaTomb_UnittestConfig']['port']
         );
+        if (isset($GLOBALS['Services_MediaTomb_UnittestConfig']['bWorkaroundTimingBug'])) {
+            $this->object->bWorkaroundTimingBug
+                = $GLOBALS['Services_MediaTomb_UnittestConfig']['bWorkaroundTimingBug'];
+        }
     }
 
     /**
@@ -285,6 +289,12 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertType(
             'Services_MediaTomb_Container',
             $this->object->getContainerByPath('/unittest/one/two/four')
+        );
+
+        //test with slash at end
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $this->object->getContainerByPath('/unittest/one/two/four/')
         );
 
         //test root

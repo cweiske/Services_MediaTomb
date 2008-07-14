@@ -40,6 +40,8 @@ class Services_MediaTomb_Item extends Services_MediaTomb_ItemBase
         'mimetype' => 'mime-type'
     );
 
+
+
     public function __construct(SimpleXMLElement $item = null)
     {
         parent::__construct($item);
@@ -50,6 +52,18 @@ class Services_MediaTomb_Item extends Services_MediaTomb_ItemBase
             $this->mimetype    = (string)$item->{'mime-type'};
         }
     }//public function __construct(..)
+
+
+
+    /**
+    * Returns the title
+    *
+    * @return string
+    */
+    public function __toString()
+    {
+        return $this->title;
+    }//public function __toString()
 
 }//class Services_MediaTomb_Item extends Services_MediaTomb_ItemBase
 

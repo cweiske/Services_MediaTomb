@@ -19,11 +19,11 @@
   <active>yes</active>
  </lead>
 
- <date>2008-07-08</date>
+ <date>2008-07-14</date>
  <time>23:42:00</time>
  <version>
-  <release>0.0.6</release>
-  <api>0.0.6</api>
+  <release>0.0.8</release>
+  <api>0.0.8</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -31,7 +31,9 @@
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
  <notes>
-  - add add() and encodePath()/decodePath() to API
+  - introducing ItemIterator
+  - docblock enhancements
+  - __toString() for most item classes
  </notes>
 
  <contents>
@@ -46,8 +48,18 @@
      <file role="php" name="ExternalLink.php" />
      <file role="php" name="ItemBase.php" />
      <file role="php" name="Item.php" />
+     <file role="php" name="ItemIterator.php" />
      <file role="php" name="SimpleItem.php" />
     </dir>
+   </dir>
+  </dir>
+
+  <dir name="docs">
+   <dir name="examples">
+    <file role="doc" name="add-dir-to-database.php" />
+    <file role="doc" name="config.php.dist" />
+    <file role="doc" name="iteratortest.php" />
+    <file role="doc" name="list-containers.php" />
    </dir>
   </dir>
 
@@ -56,7 +68,7 @@
    <dir name="Services">
     <file role="test" name="MediaTombTest.php" />
     <dir name="MediaTombTest">
-      <file role="test" name="MediaTombMock.php" />
+     <file role="test" name="MediaTombMock.php" />
     </dir>
    </dir>
   </dir>
@@ -83,15 +95,59 @@
    <install name="src/Services/MediaTomb/ExternalLink.php" as="Services/MediaTomb/ExternalLink.php" />
    <install name="src/Services/MediaTomb/ItemBase.php"     as="Services/MediaTomb/ItemBase.php" />
    <install name="src/Services/MediaTomb/Item.php"         as="Services/MediaTomb/Item.php" />
+   <install name="src/Services/MediaTomb/ItemIterator.php" as="Services/MediaTomb/ItemIterator.php" />
    <install name="src/Services/MediaTomb/SimpleItem.php"   as="Services/MediaTomb/SimpleItem.php" />
+
+   <install name="docs/examples/config.php.dist"           as="examples/config.php.dist" />
+   <install name="docs/examples/add-dir-to-database.php"   as="examples/add-dir-to-database.php" />
+   <install name="docs/examples/iteratortest.php"          as="examples/iteratortest.php" />
+   <install name="docs/examples/list-containers.php"       as="examples/list-containers.php" />
 
    <install name="tests/config.php.dist"                   as="config.php.dist" />
    <install name="tests/Services/MediaTombTest.php"        as="Services/MediaTombTest.php" />
+   <install name="tests/Services/MediaTombTest/MediaTombMock.php" as="Services/MediaTombTest/MediaTombMock.php" />
+
   </filelist>
  </phprelease>
 
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.0.8</release>
+    <api>0.0.8</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-07-14</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+  - introducing ItemIterator
+  - docblock enhancements
+  - __toString() for most item classes
+   </notes>
+  </release>
+
+  <release>
+   <version>
+    <release>0.0.7</release>
+    <api>0.0.7</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-07-11</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+  - add some examples
+  - all exceptions got codes now
+  - test config can disable timing bug workaround
+   </notes>
+  </release>
 
   <release>
    <version>
@@ -103,7 +159,7 @@
     <api>alpha</api>
    </stability>
    <date>2008-07-08</date>
-   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
   - add add() and encodePath()/decodePath() to API
    </notes>
@@ -119,7 +175,7 @@
     <api>alpha</api>
    </stability>
    <date>2008-06-14</date>
-   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
   - Fix bug when throwing exception
   - Throw exception when connection to mediatomb can't be established
@@ -140,7 +196,7 @@
     <api>alpha</api>
    </stability>
    <date>2008-05-20</date>
-   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
   - Services_MediaTomb::delete() has been renamed to deleteItem()
   - Services_MediaTomb_ItemBase gets delete() method
@@ -157,7 +213,7 @@
     <api>alpha</api>
    </stability>
    <date>2008-05-12</date>
-   <license uri="http://www.gnu.org/copyleft/lesser.html">GPL</license>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
     First pear packaged version
    </notes>

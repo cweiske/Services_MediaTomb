@@ -1,0 +1,5 @@
+#!/usr/bin/env php
+<?php
+require_once 'Services/MediaTomb/Tool.php';
+Services_MediaTomb_Tool::run();
+?>
