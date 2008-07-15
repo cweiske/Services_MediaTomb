@@ -30,7 +30,9 @@ abstract class Services_MediaTomb_ItemBase
     protected $tomb = null;
 
     /**
-    * ID of object on the server
+    * ID of object on the server.
+    * As long as the id is null, the object is considered to be non-existing
+    * on the server (new).
     *
     * @var integer
     */
@@ -84,9 +86,19 @@ abstract class Services_MediaTomb_ItemBase
 
 
 
+    /**
+    * Saves the item on the server.
+    * Only existing ($id !== null) objects can be saved.
+    * If you want to create a new object, use Services_MediaTomb::create().
+    *
+    * @see Services_MediaTomb::create()
+    * @see Services_MediaTomb::saveItem()
+    *
+    * @return void
+    */
     public function save()
     {
-        $this->tomb->saveItem($this);
+        return $this->tomb->saveItem($this);
     }//public function save()
 
 

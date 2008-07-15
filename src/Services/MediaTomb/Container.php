@@ -10,15 +10,44 @@
 * @license  LGPL http://www.gnu.org/copyleft/lesser.html
 * @link     http://pear.php.net/package/Services_MediaTomb
 */
+
+/**
+* Include base class
+*/
 require_once 'Services/MediaTomb/ItemBase.php';
 
-
+/**
+* Container (directory) on a MediaTomb server.
+*
+* Containers can be retrieved using Services_MediaTomb::getRootContainer(),
+*  or getContainers() of another container.
+* Child items can be listed via getItems(), getItemIterator()
+*  or getSingleItem().
+*
+* @see Services_MediaTomb::getRootContainer()
+* @see getContainers()
+* @see getItems()
+* @see getItemIterator()
+* @see getSingleItem()
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
+*/
 class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
 {
     public $objType = 1;
     public $class = 'object.container';
 
     public $childCount = null;
+
+    /**
+    * Container title
+    *
+    * @var string
+    */
     public $title = null;
 
     public $arCreateProps = array(
@@ -33,6 +62,14 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     );
 
 
+
+    /**
+    * Creates a new container object.
+    * When an xml container object is passed, the data will be integrated
+    * into this object.
+    *
+    * @param SimpleXMLElement $container XML container object from MediaTomb
+    */
     public function __construct(SimpleXMLElement $container = null)
     {
         parent::__construct($container);
@@ -47,6 +84,10 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     /**
     * Create a new container under this container.
     *
+    * @param string  $strTitle Title of new container
+    * @param boolean $bReturn  If the newly created object
+    *                           shall be returned
+    *
     * @return Services_MediaTomb_Container
     */
     public function createContainer($strTitle, $bReturn = true)
@@ -57,14 +98,18 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
 
 
     /**
-    * Create a new external link under container $nId
+    * Create a new external link in this container.
     *
     * @param string  $strTitle       Item title/name
     * @param string  $strUrl         Full URL to link to
     * @param string  $strDescription Description text
     * @param string  $strMimetype    Mime type, e.g. application/ogg
+    * @param string  $strProtocol    Protocol of link (e.g. "http-get")
+    * @param string  $strClass       UPnP Item class (defaults to "object.item")
+    * @param boolean $bReturn        If the newly created object
+    *                                 shall be returned
     *
-    * @return Services_MediaTomb_Item
+    * @return Services_MediaTomb_ExternalLink Newly created link
     */
     public function createExternalLink(
         $strTitle, $strUrl, $strDescription, $strMimetype,
@@ -79,14 +124,13 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
 
 
     /**
-    * Returns an array of children containers for the given ID.
+    * Returns an array of children containers for this container.
     *
     * @return Services_MediaTomb_Container[] Array of containers.
     *                                        Key is the container id
     */
     public function getContainers()
     {
-        //FIXME: check if id is set
         return $this->tomb->getContainers($this->id);
     }//public function getContainers()
 

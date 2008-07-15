@@ -10,8 +10,21 @@
 * @license  LGPL http://www.gnu.org/copyleft/lesser.html
 * @link     http://pear.php.net/package/Services_MediaTomb
 */
+
+/**
+* Include base class
+*/
 require_once 'PEAR/Exception.php';
 
+/**
+* Exception when using Services_MediaTomb
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
+*/
 class Services_MediaTomb_Exception extends PEAR_Exception
 {
     /**
@@ -21,6 +34,8 @@ class Services_MediaTomb_Exception extends PEAR_Exception
 
     /**
     * getDetailledItem() fails because the item class is not supported
+    *
+    * @see Services_MediaTomb_SimpleItem::getDetailledItem()
     */
     const UNSUPPORTED_ITEM = 23;
 
@@ -32,6 +47,8 @@ class Services_MediaTomb_Exception extends PEAR_Exception
     /**
     * The object to be saved (not created!) has no ID set.
     * If you want to save a completly new item, use create().
+    *
+    * @see Services_MediaTomb::create()
     */
     const OBJECT_HAS_NO_ID = 25;
 
@@ -42,7 +59,7 @@ class Services_MediaTomb_Exception extends PEAR_Exception
 
     /**
     * An item object needs to define an array of its own properties.
-    * This one didn't. If that happens, it's because the programmer did
+    * This object didn't. If that happens, it's because the programmer did
     * not follow the rules.
     */
     const NO_SAVE_PROPS = 31;
@@ -53,10 +70,21 @@ class Services_MediaTomb_Exception extends PEAR_Exception
     */
     const PROP_NOT_SET = 32;
 
+    /**
+    * Services_MediaTomb_SimpleItem objects may not be saved.
+    */
+    const NEVER_SAVE_SIMPLE_ITEMS = 33;
+
 }//class Services_MediaTomb_Exception extends Exception
 
 /**
-* Exception thrown by the server
+* Exception when communicating with a mediatomb the server
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
 */
 class Services_MediaTomb_ServerException extends Services_MediaTomb_Exception
 {

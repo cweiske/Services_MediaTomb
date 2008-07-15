@@ -10,13 +10,41 @@
 * @license  LGPL http://www.gnu.org/copyleft/lesser.html
 * @link     http://pear.php.net/package/Services_MediaTomb
 */
+
+/**
+* Include base class
+*/
 require_once 'Services/MediaTomb/ItemBase.php';
 
 /**
-* Simple list item with no more additional data
+* Simple list item with only title and URL.
+*
+* Simple list item that only contains ID, title and
+* its HTTP URL.
+* SimpleItems can be retrieved via
+* Services_MediaTomb_Container::getItems() and the Services_MediaTomb_ItemIterator,
+* when not retrieving detailled items.
+*
+* The corresponding detailled item can be retrieved using
+* Services_MediaTomb_SimpleItem::getDetailledItem().
+*
+* @see getDetailledItem()
+* @see Services_MediaTomb_Container::getItems()
+* @see Services_MediaTomb_ItemIterator
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
 */
 class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
 {
+    /**
+    * Item title
+    *
+    * @var string
+    */
     public $title = null;
 
     /**
@@ -49,6 +77,19 @@ class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
     {
         return $this->tomb->getDetailledItem($this->id);
     }//public function getDetailledItem()
+
+
+
+    /**
+    * You cannot save simple items
+    */
+    public function save()
+    {
+        throw new Services_MediaTomb_Exception(
+            'You may not save SimpleItems',
+            Services_MediaTomb_Exception::NEVER_SAVE_SIMPLE_ITEMS
+        );
+    }//public function save()
 
 
 

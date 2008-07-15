@@ -33,7 +33,7 @@ require_once 'Services/MediaTomb/SimpleItem.php';
 * @license  LGPL http://www.gnu.org/copyleft/lesser.html
 * @link     http://pear.php.net/package/Services_MediaTomb
 *
-* @TODO:
+* @todo
 * - track container path
 */
 class Services_MediaTomb
@@ -90,6 +90,8 @@ class Services_MediaTomb
     * Affects deletion only.
     *
     * @var boolean
+    *
+    * @see workaroundTimingBug()
     */
     public $bWorkaroundTimingBug = true;
 
@@ -283,6 +285,7 @@ class Services_MediaTomb
     *
     * @return void
     *
+    * @see $bWorkaroundTimingBug
     * @see http://sourceforge.net/tracker/index.php?func=detail&aid=1962538&group_id=129766&atid=715780
     */
     protected function workaroundTimingBug()
@@ -914,7 +917,7 @@ class Services_MediaTomb
     *
     * @return void
     *
-    * @throw Services_MediaTomb_Exception When something goes wrong
+    * @throws Services_MediaTomb_Exception When something goes wrong
     * @see create()
     */
     public function saveItem(Services_MediaTomb_ItemBase $item)

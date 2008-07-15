@@ -10,17 +10,56 @@
 * @license  LGPL http://www.gnu.org/copyleft/lesser.html
 * @link     http://pear.php.net/package/Services_MediaTomb
 */
+
+/**
+* Include base class
+*/
 require_once 'Services/MediaTomb/ItemBase.php';
 
+/**
+* "Normal" item on a MediaTomb server that links to a file on the harddisk.
+*
+* SimpleItems can be retrieved via
+*  Services_MediaTomb_Container::getItems() and
+*  the Services_MediaTomb_ItemIterator,
+*  when retrieving detailled items.
+*
+* @see Services_MediaTomb_Container::getItems()
+* @see Services_MediaTomb_ItemIterator
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
+*/
 class Services_MediaTomb_Item extends Services_MediaTomb_ItemBase
 {
     public $objType = 2;
     public $class = 'object.item';
 
+    /**
+    * Item title
+    *
+    * @var string
+    */
     public $title = null;
     public $description = null;
+
+    /**
+    * Location of file on disc.
+    *
+    * @var string
+    */
     public $location = null;
     public $mimetype = null;
+
+    /**
+    * Protocol to use to access the item
+    *
+    * @var string
+    * @see Services_MediaTomb::PROTOCOL_HTTP_GET
+    */
     public $protocol = null;
 
 

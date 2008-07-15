@@ -10,8 +10,33 @@
 * @license  LGPL http://www.gnu.org/copyleft/lesser.html
 * @link     http://pear.php.net/package/Services_MediaTomb
 */
+
+/**
+* Include main class
+*/
 require_once 'Services/MediaTomb.php';
 
+/**
+* Helper class to iterate over all the items in a container without
+* caring about result paging.
+*
+* The iterator retrieves the data efficiently on demand - you
+* can iterate over a 10.000 items without hogging your memory.
+*
+* You can obtain an iterator object using
+*  Services_MediaTomb_Container::getItemIterator()
+* or
+*  Services_MediaTomb::getItemIterator()
+*
+* @see Services_MediaTomb_Container::getItemIterator()
+* @see Services_MediaTomb::getItemIterator()
+*
+* @category Services
+* @package  Services_MediaTomb
+* @author   Christian Weiske <cweiske@php.net>
+* @license  LGPL http://www.gnu.org/copyleft/lesser.html
+* @link     http://pear.php.net/package/Services_MediaTomb
+*/
 class Services_MediaTomb_ItemIterator implements Iterator
 {
     /**
@@ -22,9 +47,9 @@ class Services_MediaTomb_ItemIterator implements Iterator
     protected $tomb = null;
 
     /**
-    * Container$container
+    * ID of container
     *
-    * @var Services_MediaTomb_Container
+    * @var integer
     */
     protected $nContainerId = null;
 
@@ -75,6 +100,16 @@ class Services_MediaTomb_ItemIterator implements Iterator
 
 
 
+    /**
+    * Creates a new iterator object.
+    *
+    * @param Services_MediaTomb $tomb         MediaTomb object
+    * @param integer            $nContainerId ID of container
+    * @param boolean            $bDetailled   Retrieve detailled or simple items
+    * @param integer            $nPageSize    Size of a page
+    *
+    * @see Services_MediaTomb_SimpleItem
+    */
     public function __construct(
         Services_MediaTomb $tomb, $nContainerId, $bDetailled = true,
         $nPageSize = 30
