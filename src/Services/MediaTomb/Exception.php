@@ -75,6 +75,13 @@ class Services_MediaTomb_Exception extends PEAR_Exception
     */
     const NEVER_SAVE_SIMPLE_ITEMS = 33;
 
+    /**
+    * Someone tried to cancel an uncancellable task
+    *
+    * @see Services_MediaTomb_Task
+    */
+    const TASK_UNCANCELLABLE = 41;
+
 }//class Services_MediaTomb_Exception extends Exception
 
 /**

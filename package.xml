@@ -19,11 +19,11 @@
   <active>yes</active>
  </lead>
 
- <date>2008-07-15</date>
+ <date>2008-07-16</date>
  <time>23:42:00</time>
  <version>
-  <release>0.1.0</release>
-  <api>0.0.8</api>
+  <release>0.1.1</release>
+  <api>0.1.1</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -31,7 +31,7 @@
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
  <notes>
-  - Improve docblocks
+  - Support for tasks
  </notes>
 
  <contents>
@@ -48,6 +48,7 @@
      <file role="php" name="Item.php" />
      <file role="php" name="ItemIterator.php" />
      <file role="php" name="SimpleItem.php" />
+     <file role="php" name="Task.php" />
     </dir>
    </dir>
   </dir>
@@ -58,6 +59,7 @@
     <file role="doc" name="config.php.dist" />
     <file role="doc" name="iteratortest.php" />
     <file role="doc" name="list-containers.php" />
+    <file role="doc" name="list-running-tasks.php" />
    </dir>
   </dir>
 
@@ -95,11 +97,13 @@
    <install name="src/Services/MediaTomb/Item.php"         as="Services/MediaTomb/Item.php" />
    <install name="src/Services/MediaTomb/ItemIterator.php" as="Services/MediaTomb/ItemIterator.php" />
    <install name="src/Services/MediaTomb/SimpleItem.php"   as="Services/MediaTomb/SimpleItem.php" />
+   <install name="src/Services/MediaTomb/Task.php"         as="Services/MediaTomb/Task.php" />
 
    <install name="docs/examples/config.php.dist"           as="examples/config.php.dist" />
    <install name="docs/examples/add-dir-to-database.php"   as="examples/add-dir-to-database.php" />
    <install name="docs/examples/iteratortest.php"          as="examples/iteratortest.php" />
    <install name="docs/examples/list-containers.php"       as="examples/list-containers.php" />
+   <install name="docs/examples/list-running-tasks.php"    as="examples/list-running-tasks.php" />
 
    <install name="tests/config.php.dist"                   as="config.php.dist" />
    <install name="tests/Services/MediaTombTest.php"        as="Services/MediaTombTest.php" />
@@ -110,6 +114,22 @@
 
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.1.1</release>
+    <api>0.1.1</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2008-07-16</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+  - Support for tasks
+   </notes>
+  </release>
 
   <release>
    <version>

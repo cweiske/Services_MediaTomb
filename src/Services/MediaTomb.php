@@ -17,6 +17,7 @@ require_once 'Services/MediaTomb/ExternalLink.php';
 require_once 'Services/MediaTomb/Item.php';
 require_once 'Services/MediaTomb/ItemIterator.php';
 require_once 'Services/MediaTomb/SimpleItem.php';
+require_once 'Services/MediaTomb/Task.php';
 
 /**
 * Library to access a MediaTomb server remotely.
@@ -186,7 +187,9 @@ class Services_MediaTomb
         if (is_int($item)) {
             return $item;
         } else if (is_object($item)
-            && $item instanceof Services_MediaTomb_ItemBase
+            && (   $item instanceof Services_MediaTomb_ItemBase
+                || $item instanceof Services_MediaTomb_Task
+            )
         ) {
             return $item->id;
         } else {
@@ -317,6 +320,30 @@ class Services_MediaTomb
         //non-existing files and directories as for existing ones.
         return true;
     }//public function add(..)
+
+
+
+    /**
+    * Cancels the given task
+    *
+    * @param mixed $task Task object or integer task id
+    *
+    * @return boolean True if all went well
+    */
+    public function cancelTask($task)
+    {
+        $nTaskId = $this->extractId($task);
+
+        $arParams = array(
+            'req_type'  => 'tasks',
+            'action'    => 'cancel',
+            'taskID'    => $nTaskId
+        );
+
+        $this->sendRequest($arParams);
+
+        return true;
+    }//public function cancelTask($task)
 
 
 
@@ -775,6 +802,32 @@ class Services_MediaTomb
 
         return $container;
     }//public function getRootContainer()
+
+
+
+    /**
+    * Returns an array of Services_MediaTomb_Task objects if
+    * any tasks are running.
+    *
+    * @return Services_MediaTomb_Task[] Array of task objects
+    */
+    public function getRunningTasks()
+    {
+        $xmlTasks = $this->sendRequest(array(
+            'req_type'     => 'update',
+            //FIXME: what is that for?
+            'force_update' => 0
+        ));
+
+        $arTasks = array();
+        foreach ($xmlTasks->task as $xmlTask) {
+            $task = new Services_MediaTomb_Task($xmlTask);
+            $task->setTomb($this);
+            $arTasks[$task->id] = $task;
+        }
+
+        return $arTasks;
+    }//public function getRunningTasks()
 
 
 

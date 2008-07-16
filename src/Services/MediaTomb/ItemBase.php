@@ -12,6 +12,11 @@
 */
 
 /**
+* Include base class
+*/
+require_once 'Services/MediaTomb/ObjectBase.php';
+
+/**
 * Abstract base class for all MediaTomb item object classes
 *
 * @category Services
@@ -20,15 +25,8 @@
 * @license  LGPL http://www.gnu.org/copyleft/lesser.html
 * @link     http://pear.php.net/package/Services_MediaTomb
 */
-abstract class Services_MediaTomb_ItemBase
+abstract class Services_MediaTomb_ItemBase extends Services_MediaTomb_ObjectBase
 {
-    /**
-    * MediaTomb reference
-    *
-    * @var Services_MediaTomb
-    */
-    protected $tomb = null;
-
     /**
     * ID of object on the server.
     * As long as the id is null, the object is considered to be non-existing
@@ -101,20 +99,6 @@ abstract class Services_MediaTomb_ItemBase
         return $this->tomb->saveItem($this);
     }//public function save()
 
-
-
-    /**
-    * Sets the internal mediatomb object
-    *
-    * @param Services_MediaTomb $tomb MediaTomb object
-    *
-    * @return void
-    */
-    public function setTomb(Services_MediaTomb $tomb)
-    {
-        $this->tomb = $tomb;
-    }//public function setTomb(..)
-
-}//class Services_MediaTomb_ItemBase
+}//class Services_MediaTomb_ItemBase extends Services_MediaTomb_ObjectBase
 
 ?>
