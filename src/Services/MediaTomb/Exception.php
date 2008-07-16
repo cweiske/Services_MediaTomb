@@ -33,6 +33,11 @@ class Services_MediaTomb_Exception extends PEAR_Exception
     const LOGIN = 403;
 
     /**
+    * Item path to be added does not exist on server
+    */
+    const FILE_NOT_FOUND = 404;
+
+    /**
     * getDetailledItem() fails because the item class is not supported
     *
     * @see Services_MediaTomb_SimpleItem::getDetailledItem()

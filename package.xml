@@ -22,8 +22,8 @@
  <date>2008-07-16</date>
  <time>23:42:00</time>
  <version>
-  <release>0.1.1</release>
-  <api>0.1.1</api>
+  <release>0.1.2</release>
+  <api>0.1.2</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -31,7 +31,12 @@
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
  <notes>
-  - Support for tasks
+  - saveItem returns true when all went well
+  - createContainerByPath allows trailing slashes
+  - the exception thrown when creating items with a not existing file location
+    has an own error code now
+  - unit tests to create and rename items
+  - ObjectBase was missing in 0.1.1
  </notes>
 
  <contents>
@@ -47,6 +52,7 @@
      <file role="php" name="ItemBase.php" />
      <file role="php" name="Item.php" />
      <file role="php" name="ItemIterator.php" />
+     <file role="php" name="ObjectBase.php" />
      <file role="php" name="SimpleItem.php" />
      <file role="php" name="Task.php" />
     </dir>
@@ -96,6 +102,7 @@
    <install name="src/Services/MediaTomb/ItemBase.php"     as="Services/MediaTomb/ItemBase.php" />
    <install name="src/Services/MediaTomb/Item.php"         as="Services/MediaTomb/Item.php" />
    <install name="src/Services/MediaTomb/ItemIterator.php" as="Services/MediaTomb/ItemIterator.php" />
+   <install name="src/Services/MediaTomb/ObjectBase.php"   as="Services/MediaTomb/ObjectBase.php" />
    <install name="src/Services/MediaTomb/SimpleItem.php"   as="Services/MediaTomb/SimpleItem.php" />
    <install name="src/Services/MediaTomb/Task.php"         as="Services/MediaTomb/Task.php" />
 

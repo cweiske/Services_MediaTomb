@@ -120,6 +120,66 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+    * Test item creation
+    */
+    public function testCreateItem()
+    {
+        $containerPath = 'unittest/createItem/';
+        $itemTitle = 'test item';
+
+        $container = $this->object->createContainerByPath($containerPath);
+        $this->assertType('Services_MediaTomb_Container', $container);
+
+        $item = new Services_MediaTomb_Item();
+        $item->title       = $itemTitle;
+        $item->location    = '/etc/passwd';//should exist on a unix server
+        $item->description = 'Just a test';
+        $item->mimetype    = 'text/plain';
+
+        $item = $this->object->create($container, $item);
+        $this->assertType(
+            'Services_MediaTomb_Item',
+            $item
+        );
+
+        //see if we really added it and it can be accessed
+        $item2 = $this->object->getItemByPath($containerPath . $itemTitle);
+        $this->assertType('Services_MediaTomb_Item', $item2);
+        $this->assertEquals($item->id, $item2->id);
+    }
+
+    /**
+    * Test item creation
+    */
+    public function testCreateItemInvalidPath()
+    {
+        $containerPath = 'unittest/testCreateItemInvalidPath/';
+        $itemTitle = 'test item';
+
+        $container = $this->object->createContainerByPath($containerPath);
+        $this->assertType('Services_MediaTomb_Container', $container);
+
+        $item = new Services_MediaTomb_Item();
+        $item->title       = $itemTitle;
+        //should not exist anywhere
+        $item->location    = '/this/stRaNgE/PatH/ShoulD/nOt/eXXisT/on/YOur/enihcam';
+        $item->description = 'Just a test to fail';
+        $item->mimetype    = 'text/plain';
+
+        $bException = false;
+        try {
+            $item = $this->object->create($container, $item);
+        } catch (Services_MediaTomb_Exception $e) {
+            $this->assertEquals(
+                Services_MediaTomb_Exception::FILE_NOT_FOUND,
+                $e->getCode()
+            );
+            $bException = true;
+        }
+        $this->assertTrue($bException);
+    }
+
+    /**
      * use create() to create a container
      */
     public function testCreateAContainer()
@@ -268,7 +328,8 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         //any server should have an audio dir, except perhaps a video-only server
         $this->assertType(
             'Services_MediaTomb_Container',
-            $this->object->getContainerByPath('Audio')
+            $this->object->getContainerByPath('Audio'),
+            'Maybe you have no "Audio" container'
         );
 
         //test own
@@ -362,7 +423,7 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
                 $bFoundAudio = true;
             }
         }
-        $this->assertTrue($bFoundAudio);
+        $this->assertTrue($bFoundAudio, '"Audio" container not found');
     }
 
     /**
@@ -564,6 +625,41 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         );
         $this->assertNull(
             $this->object->getContainerByPath('unittest/testSaveItem')
+        );
+    }
+
+    /**
+    * Test item renaming
+    */
+    public function testSaveItemRenaming()
+    {
+        $containerPath = 'unittest/testSaveItemRenaming/';
+        $itemTitle  = 'test item';
+        $itemTitle2 = 'renamed item';
+
+        $container = $this->object->createContainerByPath($containerPath);
+        $this->assertType('Services_MediaTomb_Container', $container);
+
+        $item = new Services_MediaTomb_Item();
+        $item->title       = $itemTitle;
+        $item->location    = '/etc/passwd';//should exist on a unix server
+        $item->description = 'Just a test';
+        $item->mimetype    = 'text/plain';
+
+        $item = $this->object->create($container, $item);
+        $this->assertType('Services_MediaTomb_Item', $item);
+
+        $item->title = $itemTitle2;
+        $this->assertTrue($item->save());
+
+        //see if we really added it and it can be accessed
+        $item2 = $this->object->getItemByPath($containerPath . $itemTitle2);
+        $this->assertType('Services_MediaTomb_Item', $item2);
+        $this->assertEquals($item->id, $item2->id);
+
+        //old one should not exist anymore
+        $this->assertNull(
+            $this->object->getItemByPath($containerPath . $itemTitle)
         );
     }
 

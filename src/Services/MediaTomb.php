@@ -271,9 +271,16 @@ class Services_MediaTomb
         $xml = new SimpleXMLElement($strXml);
 
         if (isset($xml->error)) {
+            $strMessage = (string)$xml->error;
+            $nCode      = Services_MediaTomb_ServerException::NORMAL_ERROR;
+
+            //currently there are no mediatomb error status codes :/
+            if ($strMessage == 'Error: file not found') {
+                $nCode = Services_MediaTomb_Exception::FILE_NOT_FOUND;
+            }
+
             throw new Services_MediaTomb_ServerException(
-                (string)$xml->error,
-                Services_MediaTomb_ServerException::NORMAL_ERROR
+                $strMessage, $nCode
             );
         }
 
@@ -383,15 +390,15 @@ class Services_MediaTomb
         if ($item->class == 'object.container'
             || $item instanceof Services_MediaTomb_Container
         ) {
-            $item = $this->getSingleContainer($nParentId, $strTitle);
+            $newitem = $this->getSingleContainer($nParentId, $strTitle);
         } else {
-            $item = $this->getSingleItem($nParentId, $strTitle);
+            $newitem = $this->getSingleItem($nParentId, $strTitle);
         }
 
-        if ($item === null) {
+        if ($newitem === null) {
             return false;
         }
-        return $item;
+        return $newitem;
     }//public function create(..)
 
 
@@ -440,6 +447,9 @@ class Services_MediaTomb
 
         if ($strPath{0} == '/') {
             $strPath = substr($strPath, 1);
+        }
+        if (substr($strPath, -1) == '/') {
+            $strPath = substr($strPath, 0, -1);
         }
 
         $arParts   = explode('/', $strPath);
@@ -968,7 +978,7 @@ class Services_MediaTomb
     *
     * @param Services_MediaTomb_ItemBase $item Item to save.
     *
-    * @return void
+    * @return boolean True if all went well
     *
     * @throws Services_MediaTomb_Exception When something goes wrong
     * @see create()
@@ -991,6 +1001,8 @@ class Services_MediaTomb
         );
 
         $this->sendRequest($arParams);
+
+        return true;
     }//public function saveItem(..)
 
 }//class Services_MediaTomb

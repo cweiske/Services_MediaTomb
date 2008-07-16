@@ -92,7 +92,7 @@ abstract class Services_MediaTomb_ItemBase extends Services_MediaTomb_ObjectBase
     * @see Services_MediaTomb::create()
     * @see Services_MediaTomb::saveItem()
     *
-    * @return void
+    * @return boolean True if all went well
     */
     public function save()
     {
