@@ -77,12 +77,12 @@ class Services_MediaTomb_ItemIterator implements Iterator
 
     /**
     * If real full items or only simple items shall be loaded.
-    * SimpleItems are cheap, while full detailled items cost on extra request
+    * SimpleItems are cheap, while full detailed items cost on extra request
     * per item.
     *
     * @var boolean
     */
-    protected $bDetailled = true;
+    protected $bDetailed = true;
 
     /**
     * If we have more items, but not loaded yet
@@ -105,18 +105,18 @@ class Services_MediaTomb_ItemIterator implements Iterator
     *
     * @param Services_MediaTomb $tomb         MediaTomb object
     * @param integer            $nContainerId ID of container
-    * @param boolean            $bDetailled   Retrieve detailled or simple items
+    * @param boolean            $bDetailed    Retrieve detailed or simple items
     * @param integer            $nPageSize    Size of a page
     *
     * @see Services_MediaTomb_SimpleItem
     */
     public function __construct(
-        Services_MediaTomb $tomb, $nContainerId, $bDetailled = true,
+        Services_MediaTomb $tomb, $nContainerId, $bDetailed = true,
         $nPageSize = 30
     ) {
         $this->tomb         = $tomb;
         $this->nContainerId = $nContainerId;
-        $this->bDetailled   = $bDetailled;
+        $this->bDetailed    = $bDetailed;
         if ($nPageSize !== null) {
             $this->nPageSize = $nPageSize;
         }
@@ -199,7 +199,7 @@ class Services_MediaTomb_ItemIterator implements Iterator
 
     /**
     * Loads the mediatomb items in $arItems based on the class variables
-    * $nPos, $nPageSize and $bDetailled.
+    * $nPos, $nPageSize and $bDetailed.
     *
     * @return void
     */
@@ -207,7 +207,7 @@ class Services_MediaTomb_ItemIterator implements Iterator
     {
         $arItems = $this->tomb->getItems(
             $this->nContainerId, $this->nPos, $this->nPageSize,
-            $this->bDetailled
+            $this->bDetailed
         );
 
         if (count($arItems) == 0) {

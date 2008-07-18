@@ -23,12 +23,12 @@ require_once 'Services/MediaTomb/ItemBase.php';
 * its HTTP URL.
 * SimpleItems can be retrieved via
 * Services_MediaTomb_Container::getItems() and the Services_MediaTomb_ItemIterator,
-* when not retrieving detailled items.
+* when not retrieving detailed items.
 *
-* The corresponding detailled item can be retrieved using
-* Services_MediaTomb_SimpleItem::getDetailledItem().
+* The corresponding detailed item can be retrieved using
+* Services_MediaTomb_SimpleItem::getDetailedItem().
 *
-* @see getDetailledItem()
+* @see getDetailedItem()
 * @see Services_MediaTomb_Container::getItems()
 * @see Services_MediaTomb_ItemIterator
 *
@@ -69,14 +69,14 @@ class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
 
 
     /**
-    * Returns the detailled item for this simple list item.
+    * Returns the detailed item for this simple list item.
     *
     * @return Services_MediaTomb_ItemBase
     */
-    public function getDetailledItem()
+    public function getDetailedItem()
     {
-        return $this->tomb->getDetailledItem($this->id);
-    }//public function getDetailledItem()
+        return $this->tomb->getDetailedItem($this->id);
+    }//public function getDetailedItem()
 
 
 

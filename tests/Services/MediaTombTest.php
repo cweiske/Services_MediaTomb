@@ -427,9 +427,9 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetDetailledItem().
+     * @todo Implement testGetDetailedItem().
      */
-    public function testGetDetailledItem() {
+    public function testGetDetailedItem() {
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
           'This test has not been implemented yet.'

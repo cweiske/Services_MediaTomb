@@ -22,7 +22,7 @@ require_once 'Services/MediaTomb/ItemBase.php';
 * SimpleItems can be retrieved via
 *  Services_MediaTomb_Container::getItems() and
 *  the Services_MediaTomb_ItemIterator,
-*  when retrieving detailled items.
+*  when retrieving detailed items.
 *
 * @see Services_MediaTomb_Container::getItems()
 * @see Services_MediaTomb_ItemIterator

@@ -38,9 +38,9 @@ class Services_MediaTomb_Exception extends PEAR_Exception
     const FILE_NOT_FOUND = 404;
 
     /**
-    * getDetailledItem() fails because the item class is not supported
+    * getDetailedItem() fails because the item class is not supported
     *
-    * @see Services_MediaTomb_SimpleItem::getDetailledItem()
+    * @see Services_MediaTomb_SimpleItem::getDetailedItem()
     */
     const UNSUPPORTED_ITEM = 23;
 

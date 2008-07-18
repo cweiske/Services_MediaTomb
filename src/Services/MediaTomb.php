@@ -661,7 +661,7 @@ class Services_MediaTomb
     *
     * @throws Services_MediaTomb_Exception When $item is of an unknown class
     */
-    public function getDetailledItem($item)
+    public function getDetailedItem($item)
     {
         $xmlItem = $this->sendRequest(array(
             'req_type'  => 'edit_load',
@@ -679,7 +679,7 @@ class Services_MediaTomb
         $obj = new $strClass($xmlItem->item);
         $obj->setTomb($this);
         return $obj;
-    }//public function getDetailledItem($nId)
+    }//public function getDetailedItem($nId)
 
 
 
@@ -742,17 +742,17 @@ class Services_MediaTomb
     * Creates and returns an item iterator to easily loop over the items
     *
     * @param mixed   $container  Parental container
-    * @param boolean $bDetailled If the simple item only, or the "real" item
+    * @param boolean $bDetailed  If the simple item only, or the "real" item
     *                             shall be returned
     *
     * @return Services_MediaTomb_ItemIterator
     */
     public function getItemIterator(
-        $container, $bDetailled = true, $nPageSize = null
+        $container, $bDetailed = true, $nPageSize = null
     ) {
         //FIXME: load for path and id, too
         return new Services_MediaTomb_ItemIterator(
-            $this, $this->extractId($container), $bDetailled, $nPageSize
+            $this, $this->extractId($container), $bDetailed, $nPageSize
         );
     }//public function getItemIterator($container)
 
@@ -761,18 +761,18 @@ class Services_MediaTomb
     /**
     * Returns an array of children containers for the given parent item.
     *
-    * Returning full (real, detailled) items costs one request per item.
+    * Returning full (real, detailed) items costs one request per item.
     *
     * @param mixed   $parent     Parent item (or item id) to get containers for
     * @param integer $nStart     Position of first item to retrieve
     * @param integer $nCount     Number of items to retrieve
-    * @param boolean $bDetailled If the simple item only, or the "real" item
+    * @param boolean $bDetailed  If the simple item only, or the "real" item
     *                             shall be returned
     *
-    * @return Services_MediaTomb_Item[] Array of items, Services_MediaTomb_Item (detailled)
-    *                                   or Services_MediaTomb_SimpleItem (not detailled)
+    * @return Services_MediaTomb_Item[] Array of items, Services_MediaTomb_Item (detailed)
+    *                                   or Services_MediaTomb_SimpleItem (not detailed)
     */
-    public function getItems($parent, $nStart = 0, $nCount = 25, $bDetailled = true)
+    public function getItems($parent, $nStart = 0, $nCount = 25, $bDetailed = true)
     {
         $xmlItems = $this->sendRequest(array(
             'req_type'  => 'items',
@@ -785,8 +785,8 @@ class Services_MediaTomb
         foreach ($xmlItems->items->item as $xmlItem) {
             $simpleItem = new Services_MediaTomb_SimpleItem($xmlItem);
             $simpleItem->setTomb($this);
-            if ($bDetailled) {
-                $arItems[$simpleItem->id] = $simpleItem->getDetailledItem();
+            if ($bDetailed) {
+                $arItems[$simpleItem->id] = $simpleItem->getDetailedItem();
             } else {
                 $arItems[$simpleItem->id] = $simpleItem;
             }
@@ -931,11 +931,11 @@ class Services_MediaTomb
     *
     * @param mixed   $parent     Parent object or ID
     * @param string  $strTitle   Title of item that shall be returned
-    * @param boolean $bDetailled If the detailled item shall be returned
+    * @param boolean $bDetailed  If the detailed item shall be returned
     *
     * @return Services_MediaTomb_ItemBase or null if not found
     */
-    public function getSingleItem($parent, $strTitle, $bDetailled = true)
+    public function getSingleItem($parent, $strTitle, $bDetailed = true)
     {
         $bHaveMore = true;
         $nStart    = 0;
@@ -955,8 +955,8 @@ class Services_MediaTomb
                 if ((string)$xmlItem->title == $strTitle) {
                     $simpleItem = new Services_MediaTomb_SimpleItem($xmlItem);
                     $simpleItem->setTomb($this);
-                    if ($bDetailled) {
-                        return $simpleItem->getDetailledItem();
+                    if ($bDetailed) {
+                        return $simpleItem->getDetailedItem();
                     } else {
                         return $simpleItem;
                     }

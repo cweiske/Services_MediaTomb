@@ -139,14 +139,14 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     /**
     * Returns an item iterator object to easily loop over the items.
     *
-    * @param boolean $bDetailled If the simple item only, or the "real" item
+    * @param boolean $bDetailed  If the simple item only, or the "real" item
     *                             shall be returned
     *
     * @return Services_MediaTomb_ItemIterator
     */
-    public function getItemIterator($bDetailled = true, $nPageSize = null)
+    public function getItemIterator($bDetailed = true, $nPageSize = null)
     {
-        return $this->tomb->getItemIterator($this, $bDetailled, $nPageSize);
+        return $this->tomb->getItemIterator($this, $bDetailed, $nPageSize);
     }//public function getItemIterator()
 
 
@@ -156,15 +156,15 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     *
     * @param integer $nStart     Position of first item to retrieve
     * @param integer $nCount     Number of items to retrieve
-    * @param boolean $bDetailled If the simple item only, or the "real" item
+    * @param boolean $bDetailed If the simple item only, or the "real" item
     *                             shall be returned
     *
-    * @return Services_MediaTomb_Item[] Array of items, Services_MediaTomb_Item (detailled)
-    *                                   or Services_MediaTomb_SimpleItem (not detailled)
+    * @return Services_MediaTomb_Item[] Array of items, Services_MediaTomb_Item (detailed)
+    *                                   or Services_MediaTomb_SimpleItem (not detailed)
     */
-    public function getItems($nStart = 0, $nCount = 25, $bDetailled = true)
+    public function getItems($nStart = 0, $nCount = 25, $bDetailed = true)
     {
-        return $this->tomb->getItems($this->id, $nStart, $nCount, $bDetailled);
+        return $this->tomb->getItems($this->id, $nStart, $nCount, $bDetailed);
     }//public function getItems($nStart = 0, $nCount = 25)
 
 
@@ -189,13 +189,13 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     * and the given parent id.
     *
     * @param string  $strTitle   Title of item that shall be returned
-    * @param boolean $bDetailled If the detailled item shall be returned
+    * @param boolean $bDetailed  If the detailed item shall be returned
     *
     * @return Services_MediaTomb_ItemBase or null if not found
     */
-    public function getSingleItem($strTitle, $bDetailled = true)
+    public function getSingleItem($strTitle, $bDetailed = true)
     {
-        return $this->tomb->getSingleItem($this->id, $strTitle, $bDetailled);
+        return $this->tomb->getSingleItem($this->id, $strTitle, $bDetailed);
     }//public function getSingleItem(..)
 
 
