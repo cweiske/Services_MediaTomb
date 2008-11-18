@@ -27,7 +27,7 @@ require_once 'Services/MediaTomb/ItemBase.php';
 */
 class Services_MediaTomb_ExternalLink extends Services_MediaTomb_ItemBase
 {
-    public $objType = 10;
+    public $obj_type = 'external_url';
     public $class = 'object.item';
 
     /**
@@ -51,7 +51,7 @@ class Services_MediaTomb_ExternalLink extends Services_MediaTomb_ItemBase
     public $arCreateProps = array(
         'title',
         'url' => 'location',
-        'objType',
+        'obj_type',
         'protocol',
         'class',
         'description',

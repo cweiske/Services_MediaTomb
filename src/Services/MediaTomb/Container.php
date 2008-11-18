@@ -38,7 +38,7 @@ require_once 'Services/MediaTomb/ItemBase.php';
 */
 class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
 {
-    public $objType = 1;
+    public $obj_type = 'container';
     public $class = 'object.container';
 
     public $childCount = null;
@@ -53,7 +53,7 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     public $arCreateProps = array(
         'title',
         'class',
-        'objType'
+        'obj_type'
     );
 
     public $arSaveProps = array(

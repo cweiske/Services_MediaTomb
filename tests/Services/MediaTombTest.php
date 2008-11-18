@@ -6,20 +6,6 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 
 require_once 'PHPUnit/Framework.php';
 
-$strSrcDir = dirname(__FILE__) . '/../../src';
-if (file_exists($strSrcDir)) {
-    chdir($strSrcDir);
-}
-
-require_once 'Services/MediaTomb.php';
-
-$strMockPath = dirname(__FILE__) . '/MediaTombTest/MediaTombMock.php';
-if (file_exists($strMockPath)) {
-    require_once $strMockPath;
-} else {
-    require_once 'Services/MediaTombTest/MediaTombMock.php';
-}
-
 /**
  * Test class for Services_MediaTomb.
  *
@@ -42,6 +28,20 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->configExists = file_exists($configFile);
         if ($this->configExists) {
             include_once $configFile;
+        }
+
+        $strSrcDir = dirname(__FILE__) . '/../../src';
+        if (file_exists($strSrcDir)) {
+            chdir($strSrcDir);
+        }
+
+        require_once 'Services/MediaTomb.php';
+
+        $strMockPath = dirname(__FILE__) . '/MediaTombTest/MediaTombMock.php';
+        if (file_exists($strMockPath)) {
+            require_once $strMockPath;
+        } else {
+            require_once 'Services/MediaTombTest/MediaTombMock.php';
         }
     }
 
@@ -124,6 +124,7 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     */
     public function testCreateItem()
     {
+$this->markTestSkipped('mediatomb crashes with this test');
         $containerPath = 'unittest/createItem/';
         $itemTitle = 'test item';
 
@@ -153,6 +154,7 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     */
     public function testCreateItemInvalidPath()
     {
+$this->markTestSkipped('mediatomb crashes with this');
         $containerPath = 'unittest/testCreateItemInvalidPath/';
         $itemTitle = 'test item';
 
@@ -443,7 +445,7 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals(
             'Services_MediaTomb_Container',
-            $this->object->getItemClass(1)
+            $this->object->getItemClass('container')
         );
     }
 
@@ -633,6 +635,7 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     */
     public function testSaveItemRenaming()
     {
+$this->markTestSkipped('mediatomb crashes with this test');
         $containerPath = 'unittest/testSaveItemRenaming/';
         $itemTitle  = 'test item';
         $itemTitle2 = 'renamed item';

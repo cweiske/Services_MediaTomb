@@ -78,7 +78,9 @@ class Services_MediaTomb
     *
     * @var array
     */
-    protected $arDefaultParams = array();
+    protected $arDefaultParams = array(
+        'return_type' => 'xml',
+    );
 
     /**
     * Weather to work around the mediatomb timing bug
@@ -216,9 +218,16 @@ class Services_MediaTomb
     {
         $xml   = $this->sendRequest(array(
             'req_type' => 'auth',
-            'sid'      => 'null'
+            'action'   => 'get_sid',
+            'sid'      => 'null',
         ));
         $sid   = (string)$xml['sid'];
+
+        $xml   = $this->sendRequest(array(
+            'req_type' => 'auth',
+            'action'   => 'get_token',
+            'sid'      => $sid,
+        ));
         $token = (string)$xml->token;
 
         $this->arDefaultParams['sid'] = $sid;
@@ -226,9 +235,9 @@ class Services_MediaTomb
         try {
             $xml = $this->sendRequest(array(
                 'req_type' => 'auth',
-                'auth'     => '1',
+                'action'   => 'login',
                 'username' => $username,
-                'password' => md5($token . $password)
+                'password' => md5($token . $password),
             ));
         } catch (Services_MediaTomb_ServerException $e) {
             throw new Services_MediaTomb_Exception(
@@ -416,9 +425,9 @@ class Services_MediaTomb
     {
         $container = new Services_MediaTomb_Container();
 
-        $container->objType = 1;
-        $container->title   = $strTitle;
-        $container->class   = 'object.container';
+        $container->obj_type = 'container';
+        $container->title    = $strTitle;
+        $container->class    = 'object.container';
 
         return $this->create($parent, $container, $bReturn);
     }//public function createContainer(..)
@@ -502,7 +511,7 @@ class Services_MediaTomb
     ) {
         $link = new Services_MediaTomb_ExternalLink();
 
-        $link->objType     = 10;
+        $link->obj_type    = 'external_url';
         $link->title       = $strTitle;
         $link->url         = $strUrl;
         $link->protocol    = $strProtocol;
@@ -668,10 +677,10 @@ class Services_MediaTomb
             'object_id' => $this->extractId($item)
         ));
 
-        $strClass = self::getItemClass((int)$xmlItem->item->objType);
+        $strClass = self::getItemClass((string)$xmlItem->item->obj_type);
         if ($strClass === null) {
             throw new Services_MediaTomb_Exception(
-                'Unsupported object class ' . $xmlItem->item->objType . '.',
+                'Unsupported object class ' . $xmlItem->item->obj_type . '.',
                 Services_MediaTomb_Exception::UNSUPPORTED_ITEM
             );
         }
@@ -715,25 +724,25 @@ class Services_MediaTomb
     * Returns the Services_MediaTomb_* class for the given
     * item type.
     *
-    * @param integer $nType Type ID
+    * @param string $strType Type string
     *
     * @return string class that can be instantiated, or NULL if not found
     */
-    public static function getItemClass($nType)
+    public static function getItemClass($strType)
     {
         static $arClasses = array(
-            1 => 'Services_MediaTomb_Container',
-            2 => 'Services_MediaTomb_Item',
-            //6 => 'Services_MediaTomb_ActiveItem',
-            10 => 'Services_MediaTomb_ExternalLink',
-            //26 => 'Services_MediaTomb_InternalLink',
+            'container'    => 'Services_MediaTomb_Container',
+            'item'         => 'Services_MediaTomb_Item',
+            //'active_item'  => 'Services_MediaTomb_ActiveItem',
+            'external_url' => 'Services_MediaTomb_ExternalLink',
+            //'internal_url' => 'Services_MediaTomb_InternalLink',
         );
 
-        if (!isset($arClasses[$nType])) {
+        if (!isset($arClasses[$strType])) {
             return null;
         }
 
-        return $arClasses[$nType];
+        return $arClasses[$strType];
     }//public static function getItemClass($nType)
 
 

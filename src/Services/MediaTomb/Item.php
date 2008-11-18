@@ -35,7 +35,7 @@ require_once 'Services/MediaTomb/ItemBase.php';
 */
 class Services_MediaTomb_Item extends Services_MediaTomb_ItemBase
 {
-    public $objType = 2;
+    public $obj_type = 'item';
     public $class = 'object.item';
 
     /**
@@ -67,7 +67,7 @@ class Services_MediaTomb_Item extends Services_MediaTomb_ItemBase
         'title',
         'location',
         'class',
-        'objType',
+        'obj_type',
         'description',
         'mimetype' => 'mime-type'
     );
