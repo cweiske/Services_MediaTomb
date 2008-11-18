@@ -407,6 +407,18 @@ $this->markTestSkipped('mediatomb crashes with this');
         );
     }
 
+    public function testGetContainersByPathSlashAtBeginning()
+    {
+        $this->assertType(
+            'Services_MediaTomb_Container',
+            $this->object->createContainerByPath('unittest/one/two/three')
+        );
+
+        $arContainers = $this->object->getContainersByPath('/unittest/one/two/three');
+        $this->assertType('array', $arContainers);
+        $this->assertEquals(0, array_shift($arContainers)->id);
+    }
+
     /**
      *
      */
