@@ -535,6 +535,49 @@ $this->markTestSkipped('mediatomb crashes with this');
 
 
     /**
+    * Test getRunningTasks() without any running tasks
+    */
+    public function testGetRunningTasksNone()
+    {
+        $tasks = $this->object->getRunningTasks();
+        $this->assertType('array', $tasks);
+        $this->assertEquals(0, count($tasks));
+    }
+
+
+
+    /**
+    * Test getRunningTasks() when one is running
+    */
+    public function testGetRunningTasksOne()
+    {
+        $path = realpath(dirname(__FILE__) . '/../../');
+
+        //clean up
+        $item = $this->object->getContainerByPath('PC Directory/' . $path);
+        if ($item) {
+            $this->object->deleteItem($item);
+        }
+
+        //add so we get a task
+        $this->object->add($path);
+
+        $tasks = $this->object->getRunningTasks();
+        $this->assertType('array', $tasks);
+        $this->assertEquals(1, count($tasks));
+
+        //cancel it
+        $this->object->cancelTask(reset($tasks));
+        usleep(500);
+
+        $tasks = $this->object->getRunningTasks();
+        $this->assertType('array', $tasks);
+        $this->assertEquals(0, count($tasks));
+    }
+
+
+
+    /**
      *
      */
     public function testGetSingleContainer()

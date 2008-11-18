@@ -353,7 +353,7 @@ class Services_MediaTomb
         $arParams = array(
             'req_type'  => 'tasks',
             'action'    => 'cancel',
-            'taskID'    => $nTaskId
+            'task_id'    => $nTaskId
         );
 
         $this->sendRequest($arParams);
@@ -833,9 +833,8 @@ class Services_MediaTomb
     public function getRunningTasks()
     {
         $xmlTasks = $this->sendRequest(array(
-            'req_type'     => 'update',
-            //FIXME: what is that for?
-            'force_update' => 0
+            'req_type' => 'void',
+            'updates'  => 'check'
         ));
 
         $arTasks = array();
