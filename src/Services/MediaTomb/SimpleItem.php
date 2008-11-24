@@ -56,11 +56,11 @@ class Services_MediaTomb_SimpleItem extends Services_MediaTomb_ItemBase
 
 
 
-    public function __construct(SimpleXMLElement $item = null)
+    public function __construct(stdClass $item = null)
     {
         if ($item !== null) {
             //FIXME: wrong inhertitance relation
-            $this->id    = (int)$item['id'];
+            $this->id    = (int)$item->id;
             $this->title = (string)$item->title;
             $this->url   = (string)$item->res;
         }

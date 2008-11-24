@@ -69,15 +69,15 @@ class Services_MediaTomb_ExternalLink extends Services_MediaTomb_ItemBase
 
 
 
-    public function __construct(SimpleXMLElement $item = null)
+    public function __construct(stdClass $item = null)
     {
         parent::__construct($item);
         if ($item !== null) {
-            $this->title       = (string)$item->title;
-            $this->description = (string)$item->description;
-            $this->url         = (string)$item->location;
-            $this->mimetype    = (string)$item->{'mime-type'};
-            $this->protocol    = (string)$item->protocol;
+            $this->title       = (string)$item->title->value;
+            $this->description = (string)$item->description->value;
+            $this->url         = (string)$item->location->value;
+            $this->mimetype    = (string)$item->{'mime-type'}->value;
+            $this->protocol    = (string)$item->protocol->value;
         }
     }//public function __construct(..)
 

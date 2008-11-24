@@ -78,9 +78,7 @@ class Services_MediaTomb
     *
     * @var array
     */
-    protected $arDefaultParams = array(
-        'return_type' => 'xml',
-    );
+    protected $arDefaultParams = array();
 
     /**
     * Weather to work around the mediatomb timing bug
@@ -216,24 +214,24 @@ class Services_MediaTomb
     */
     protected function login($username, $password)
     {
-        $xml   = $this->sendRequest(array(
+        $json = $this->sendRequest(array(
             'req_type' => 'auth',
             'action'   => 'get_sid',
             'sid'      => 'null',
         ));
-        $sid   = (string)$xml['sid'];
+        $sid = $json->sid;
 
-        $xml   = $this->sendRequest(array(
+        $json = $this->sendRequest(array(
             'req_type' => 'auth',
             'action'   => 'get_token',
             'sid'      => $sid,
         ));
-        $token = (string)$xml->token;
+        $token = (string)$json->token;
 
         $this->arDefaultParams['sid'] = $sid;
 
         try {
-            $xml = $this->sendRequest(array(
+            $json = $this->sendRequest(array(
                 'req_type' => 'auth',
                 'action'   => 'login',
                 'username' => $username,
@@ -250,12 +248,12 @@ class Services_MediaTomb
 
     /**
     * Sends request to server.
-    * Automatically checks for errors in the returned xml values.
+    * Automatically checks for errors in the returned json values.
     *
     * @param array $arParams Array of parameters (key-value pairs) that shall
     *                        be send with the request
     *
-    * @return SimpleXMLElement XML object of return value
+    * @return stdClass json object of return value
     *
     * @throws Services_MediaTomb_Exception In case an error occurs
     */
@@ -267,20 +265,27 @@ class Services_MediaTomb
             $arParamStrings[] = urlencode($strKey) . '=' . urlencode($strValue);
         }
 
-        $strXml = file_get_contents(
+        $strJson = file_get_contents(
             $this->strInterfaceUrl . implode('&', $arParamStrings)
         );
-        if ($strXml === false) {
+        if ($strJson === false) {
             throw new Services_MediaTomb_ServerException(
                 'Connection to MediaTomb server failed.',
-                Services_MediaTomb_ServerException::CANNOT_READ_XML
+                Services_MediaTomb_ServerException::CANNOT_READ_DATA
+            );
+        }
+        $json = json_decode($strJson);
+
+        if ($json === false) {
+            throw new Services_MediaTomb_ServerException(
+                'MediaTomb response cannot be decoded.',
+                Services_MediaTomb_ServerException::CANNOT_DECODE_DATA
             );
         }
 
-        $xml = new SimpleXMLElement($strXml);
 
-        if (isset($xml->error)) {
-            $strMessage = (string)$xml->error;
+        if (isset($json->error)) {
+            $strMessage = (string)$json->error;
             $nCode      = Services_MediaTomb_ServerException::NORMAL_ERROR;
 
             //currently there are no mediatomb error status codes :/
@@ -293,7 +298,7 @@ class Services_MediaTomb
             );
         }
 
-        return $xml;
+        return $json;
     }//protected function sendRequest(..)
 
 
@@ -643,15 +648,15 @@ class Services_MediaTomb
     */
     public function getContainers($parent)
     {
-        $xmlContainers = $this->sendRequest(array(
+        $jsonContainers = $this->sendRequest(array(
             'req_type'  => 'containers',
             'parent_id' => $this->extractId($parent),
             'select_it' => 0
         ));
 
         $arContainers = array();
-        foreach ($xmlContainers->containers->container as $xmlContainer) {
-            $container = new Services_MediaTomb_Container($xmlContainer);
+        foreach ($jsonContainers->containers->container as $jsonContainer) {
+            $container = new Services_MediaTomb_Container($jsonContainer);
             $container->setTomb($this);
             $arContainers[$container->id] = $container;
         }
@@ -672,20 +677,20 @@ class Services_MediaTomb
     */
     public function getDetailedItem($item)
     {
-        $xmlItem = $this->sendRequest(array(
+        $jsonItem = $this->sendRequest(array(
             'req_type'  => 'edit_load',
             'object_id' => $this->extractId($item)
         ));
 
-        $strClass = self::getItemClass((string)$xmlItem->item->obj_type);
+        $strClass = self::getItemClass((string)$jsonItem->item->obj_type);
         if ($strClass === null) {
             throw new Services_MediaTomb_Exception(
-                'Unsupported object class ' . $xmlItem->item->obj_type . '.',
+                'Unsupported object class ' . $jsonItem->item->obj_type . '.',
                 Services_MediaTomb_Exception::UNSUPPORTED_ITEM
             );
         }
 
-        $obj = new $strClass($xmlItem->item);
+        $obj = new $strClass($jsonItem->item);
         $obj->setTomb($this);
         return $obj;
     }//public function getDetailedItem($nId)
@@ -783,7 +788,7 @@ class Services_MediaTomb
     */
     public function getItems($parent, $nStart = 0, $nCount = 25, $bDetailed = true)
     {
-        $xmlItems = $this->sendRequest(array(
+        $jsonItems = $this->sendRequest(array(
             'req_type'  => 'items',
             'parent_id' => $this->extractId($parent),
             'start'     => $nStart,
@@ -791,8 +796,8 @@ class Services_MediaTomb
         ));
 
         $arItems = array();
-        foreach ($xmlItems->items->item as $xmlItem) {
-            $simpleItem = new Services_MediaTomb_SimpleItem($xmlItem);
+        foreach ($jsonItems->items->item as $jsonItem) {
+            $simpleItem = new Services_MediaTomb_SimpleItem($jsonItem);
             $simpleItem->setTomb($this);
             if ($bDetailed) {
                 $arItems[$simpleItem->id] = $simpleItem->getDetailedItem();
@@ -832,16 +837,19 @@ class Services_MediaTomb
     */
     public function getRunningTasks()
     {
-        $xmlTasks = $this->sendRequest(array(
+        $jsonTasks = $this->sendRequest(array(
             'req_type' => 'void',
             'updates'  => 'check'
         ));
 
         $arTasks = array();
-        foreach ($xmlTasks->task as $xmlTask) {
-            $task = new Services_MediaTomb_Task($xmlTask);
-            $task->setTomb($this);
-            $arTasks[$task->id] = $task;
+        if (isset($jsonTasks->task)) {
+            //FIXME: multiple tasks?
+//            foreach ($jsonTasks->task as $jsonTask) {
+                $task = new Services_MediaTomb_Task($jsonTasks->task);
+                $task->setTomb($this);
+                $arTasks[$task->id] = $task;
+//            }
         }
 
         return $arTasks;
@@ -915,14 +923,14 @@ class Services_MediaTomb
     */
     public function getSingleContainer($parent, $strTitle)
     {
-        $xmlContainers = $this->sendRequest(array(
+        $jsonContainers = $this->sendRequest(array(
             'req_type'  => 'containers',
             'parent_id' => $this->extractId($parent),
             'select_it' => 0
         ));
-        foreach ($xmlContainers->containers->container as $xmlContainer) {
-            if ((string)$xmlContainer == $strTitle) {
-                $container = new Services_MediaTomb_Container($xmlContainer);
+        foreach ($jsonContainers->containers->container as $jsonContainer) {
+            if ($jsonContainer->title == $strTitle) {
+                $container = new Services_MediaTomb_Container($jsonContainer);
                 $container->setTomb($this);
                 return $container;
             }
@@ -951,7 +959,7 @@ class Services_MediaTomb
         $nParentId = $this->extractId($parent);
 
         while ($bHaveMore) {
-            $xmlItems = $this->sendRequest(array(
+            $jsonItems = $this->sendRequest(array(
                 'req_type'  => 'items',
                 'parent_id' => $nParentId,
                 'start'     => $nStart,
@@ -959,9 +967,9 @@ class Services_MediaTomb
             ));
 
             $arItems = array();
-            foreach ($xmlItems->items->item as $xmlItem) {
-                if ((string)$xmlItem->title == $strTitle) {
-                    $simpleItem = new Services_MediaTomb_SimpleItem($xmlItem);
+            foreach ($jsonItems->items->item as $jsonItem) {
+                if ((string)$jsonItem->title == $strTitle) {
+                    $simpleItem = new Services_MediaTomb_SimpleItem($jsonItem);
                     $simpleItem->setTomb($this);
                     if ($bDetailed) {
                         return $simpleItem->getDetailedItem();
@@ -972,7 +980,7 @@ class Services_MediaTomb
             }
 
             $nStart   += $nCount;
-            $nTotal    = (int)$xmlItems->items['totalMatches'];
+            $nTotal    = (int)$jsonItems->items->total_matches;
             $bHaveMore = $nTotal >= $nStart;
         }
 

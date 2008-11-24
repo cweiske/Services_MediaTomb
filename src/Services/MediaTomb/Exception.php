@@ -101,10 +101,15 @@ class Services_MediaTomb_Exception extends PEAR_Exception
 class Services_MediaTomb_ServerException extends Services_MediaTomb_Exception
 {
     /**
-    * Reading the XML response from the HTTP request failed.
+    * Reading the response data from the HTTP request failed.
     * E.g. your network could be down, or MediaTomb crashed while responding.
     */
-    const CANNOT_READ_XML = 50;
+    const CANNOT_READ_DATA = 50;
+
+    /**
+    * Decoding the data returned from MediaTomb failed.
+    */
+    const CANNOT_DECODE_DATA = 51;
 
     /**
     * The server properly returned a response, but it contains an error message.

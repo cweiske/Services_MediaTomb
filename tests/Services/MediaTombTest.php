@@ -580,7 +580,7 @@ $this->markTestSkipped('mediatomb crashes with this');
 
         //cancel it
         $this->object->cancelTask(reset($tasks));
-        usleep(500);
+        usleep(1000);
 
         $tasks = $this->object->getRunningTasks();
         $this->assertType('array', $tasks);

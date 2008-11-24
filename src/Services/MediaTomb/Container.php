@@ -68,14 +68,14 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     * When an xml container object is passed, the data will be integrated
     * into this object.
     *
-    * @param SimpleXMLElement $container XML container object from MediaTomb
+    * @param stdClass $container Json container object from MediaTomb
     */
-    public function __construct(SimpleXMLElement $container = null)
+    public function __construct(stdClass $container = null)
     {
         parent::__construct($container);
         if ($container !== null) {
-            $this->childCount = (int)$container['childCount'];
-            $this->title      = (string)$container;
+            $this->childCount = (int)$container->child_count;
+            $this->title      = (string)$container->title;
         }
     }//public function __construct(..)
 

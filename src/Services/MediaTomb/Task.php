@@ -59,14 +59,14 @@ class Services_MediaTomb_Task extends Services_MediaTomb_ObjectBase
     /**
     * Creates a new task object
     *
-    * @param SimpleXMLElement $item Task xml item
+    * @param stdClass $item Task json item
     */
-    public function __construct(SimpleXMLElement $item = null)
+    public function __construct(stdClass $item = null)
     {
         if ($item !== null) {
-            $this->id          = (int)$item['id'];
-            $this->title       = (string)$item;
-            $this->cancellable = ((string)$item['cancellable']) == 1;
+            $this->id          = (int)$item->id;
+            $this->title       = (string)$item->text;
+            $this->cancellable = ((string)$item->cancellable) == 1;
         }
     }//public function __construct(..)
 
