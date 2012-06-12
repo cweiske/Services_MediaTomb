@@ -1,11 +1,4 @@
 <?php
-// Call Services_MediaTombTest::main() if this source file is executed directly.
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'Services_MediaTombTest::main');
-}
-
-require_once 'PHPUnit/Framework.php';
-
 /**
  * Test class for Services_MediaTomb.
  *
@@ -43,20 +36,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         } else {
             require_once 'Services/MediaTombTest/MediaTombMock.php';
         }
-    }
-
-    /**
-     * Runs the test methods of this class.
-     *
-     * @access public
-     * @static
-     */
-    public static function main()
-    {
-        require_once 'PHPUnit/TextUI/TestRunner.php';
-
-        $suite  = new PHPUnit_Framework_TestSuite('Services_MediaTombTest');
-        $result = PHPUnit_TextUI_TestRunner::run($suite);
     }
 
     /**
@@ -129,7 +108,7 @@ $this->markTestSkipped('mediatomb crashes with this test');
         $itemTitle = 'test item';
 
         $container = $this->object->createContainerByPath($containerPath);
-        $this->assertType('Services_MediaTomb_Container', $container);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $container);
 
         $item = new Services_MediaTomb_Item();
         $item->title       = $itemTitle;
@@ -138,14 +117,14 @@ $this->markTestSkipped('mediatomb crashes with this test');
         $item->mimetype    = 'text/plain';
 
         $item = $this->object->create($container, $item);
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Item',
             $item
         );
 
         //see if we really added it and it can be accessed
         $item2 = $this->object->getItemByPath($containerPath . $itemTitle);
-        $this->assertType('Services_MediaTomb_Item', $item2);
+        $this->assertInstanceOf('Services_MediaTomb_Item', $item2);
         $this->assertEquals($item->id, $item2->id);
     }
 
@@ -159,7 +138,7 @@ $this->markTestSkipped('mediatomb crashes with this');
         $itemTitle = 'test item';
 
         $container = $this->object->createContainerByPath($containerPath);
-        $this->assertType('Services_MediaTomb_Container', $container);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $container);
 
         $item = new Services_MediaTomb_Item();
         $item->title       = $itemTitle;
@@ -187,12 +166,12 @@ $this->markTestSkipped('mediatomb crashes with this');
     public function testCreateAContainer()
     {
         $utcon = $this->object->createContainer(0, 'unittest');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $cont = new Services_MediaTomb_Container();
         $cont->title = 'testCreate-container';
         $cont2 = $this->object->create($utcon->id, $cont);
-        $this->assertType('Services_MediaTomb_Container', $cont2);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $cont2);
         $this->assertEquals($cont->title, $cont2->title);
     }
 
@@ -202,7 +181,7 @@ $this->markTestSkipped('mediatomb crashes with this');
     public function testCreateAnExternalLink()
     {
         $utcon = $this->object->createContainer(0, 'unittest');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $link = new Services_MediaTomb_ExternalLink();
         $link->title = 'testCreate-externallink';
@@ -218,7 +197,7 @@ $this->markTestSkipped('mediatomb crashes with this');
         $link->protocol    = Services_MediaTomb::PROTOCOL_HTTP_GET;
 
         $cont2 = $this->object->create($utcon->id, $link);
-        $this->assertType('Services_MediaTomb_ExternalLink', $cont2);
+        $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $cont2);
         $this->assertEquals($link->title, $cont2->title);
     }
 
@@ -229,18 +208,18 @@ $this->markTestSkipped('mediatomb crashes with this');
     {
         //create container with mediatomb object
         $utcon = $this->object->createContainer(0, 'unittest');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         //create subcontainer
         $utcon2 = $this->object->createContainer($utcon->id, 'firstsub');
-        $this->assertType('Services_MediaTomb_Container', $utcon2);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon2);
 
         //create container from container object
         $utcon3 = $utcon2->createContainer('secondsub');
-        $this->assertType('Services_MediaTomb_Container', $utcon3);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon3);
 
         $utcon4 = $this->object->getContainerByPath('unittest/firstsub/secondsub');
-        $this->assertType('Services_MediaTomb_Container', $utcon4);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon4);
         $this->assertEquals($utcon3->id, $utcon4->id);
     }
 
@@ -250,21 +229,21 @@ $this->markTestSkipped('mediatomb crashes with this');
     public function testCreateContainerByPath()
     {
         $utcon = $this->object->createContainerByPath('unittest/odins');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $utcon = $this->object->createContainerByPath('unittest/odins/dwa/tri');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $utcon2 = $this->object->getContainerByPath('unittest/odins/dwa/tri');
-        $this->assertType('Services_MediaTomb_Container', $utcon2);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon2);
         $this->assertEquals($utcon->id, $utcon2->id);
 
         //test with slash at beginning
         $utcon3 = $this->object->createContainerByPath('/unittest/odins/dwa/tchetirje');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $utcon4 = $this->object->getContainerByPath('/unittest/odins/dwa/tchetirje');
-        $this->assertType('Services_MediaTomb_Container', $utcon4);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon4);
         $this->assertEquals($utcon3->id, $utcon4->id);
     }
 
@@ -311,14 +290,14 @@ $this->markTestSkipped('mediatomb crashes with this');
     public function testCreateExternalLink()
     {
         $utcon = $this->object->createContainer(0, 'unittest');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $link = $this->object->createExternalLink(
             $utcon->id,
             'testCreateExternalLink', 'http://example.org/testCreateExternalLink',
             'descript', 'text/html'
         );
-        $this->assertType('Services_MediaTomb_ExternalLink', $link);
+        $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $link);
         $this->assertEquals('testCreateExternalLink', $link->title);
     }
 
@@ -328,48 +307,48 @@ $this->markTestSkipped('mediatomb crashes with this');
     public function testGetContainerByPath()
     {
         //any server should have an audio dir, except perhaps a video-only server
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->getContainerByPath('Audio'),
             'Maybe you have no "Audio" container'
         );
 
         //test own
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->createContainerByPath('unittest/one/two/three')
         );
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->getContainerByPath('unittest/one/two/three')
         );
 
         //test with slash at beginning
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->createContainerByPath('/unittest/one/two/four')
         );
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->getContainerByPath('/unittest/one/two/four')
         );
 
         //test with slash at end
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->getContainerByPath('/unittest/one/two/four/')
         );
 
         //test root
         $rootcontainer = $this->object->getContainerByPath('');
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $rootcontainer
         );
         $this->assertEquals(0, $rootcontainer->id);
 
         $rootcontainer = $this->object->getContainerByPath('/');
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $rootcontainer
         );
@@ -381,13 +360,13 @@ $this->markTestSkipped('mediatomb crashes with this');
      */
     public function testGetContainersByPath()
     {
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->createContainerByPath('unittest/one/two/three')
         );
 
         $arContainers = $this->object->getContainersByPath('unittest/one/two/three');
-        $this->assertType('array', $arContainers);
+        $this->assertInternalType('array', $arContainers);
         $this->assertEquals(0, array_shift($arContainers)->id);
         $this->assertEquals(
             $this->object->getContainerByPath('unittest')->id,
@@ -409,13 +388,13 @@ $this->markTestSkipped('mediatomb crashes with this');
 
     public function testGetContainersByPathSlashAtBeginning()
     {
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->createContainerByPath('unittest/one/two/three')
         );
 
         $arContainers = $this->object->getContainersByPath('/unittest/one/two/three');
-        $this->assertType('array', $arContainers);
+        $this->assertInternalType('array', $arContainers);
         $this->assertEquals(0, array_shift($arContainers)->id);
     }
 
@@ -429,7 +408,7 @@ $this->markTestSkipped('mediatomb crashes with this');
 
         $bFoundAudio = false;
         foreach ($arContainers as $container) {
-            $this->assertType(
+            $this->assertInstanceOf(
                 'Services_MediaTomb_Container',
                 $container
             );
@@ -468,18 +447,18 @@ $this->markTestSkipped('mediatomb crashes with this');
     {
         //prepare
         $utcon = $this->object->createContainer(0, 'unittest');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $link = $this->object->createExternalLink(
             $utcon->id,
             'testGetItemByPath', 'http://example.org/testGetItemByPath',
             'descript', 'text/html'
         );
-        $this->assertType('Services_MediaTomb_ExternalLink', $link);
+        $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $link);
 
         //test
         $link2 = $this->object->getItemByPath('unittest/testGetItemByPath');
-        $this->assertType('Services_MediaTomb_ExternalLink', $link2);
+        $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $link2);
         $this->assertEquals($link->title, $link2->title);
         $this->assertEquals($link->url, $link2->url);
     }
@@ -508,7 +487,7 @@ $this->markTestSkipped('mediatomb crashes with this');
         $this->assertEquals(3, count($arItems));
         $arFound = array();
         foreach ($arItems as $item) {
-            $this->assertType('Services_MediaTomb_ExternalLink', $item);
+            $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $item);
             $arFound[$item->title] = true;
         }
 
@@ -521,7 +500,7 @@ $this->markTestSkipped('mediatomb crashes with this');
         $this->assertEquals(3, count($arItems));
         $arFound = array();
         foreach ($arItems as $item) {
-            $this->assertType('Services_MediaTomb_ExternalLink', $item);
+            $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $item);
             $arFound[$item->title] = true;
         }
 
@@ -540,7 +519,7 @@ $this->markTestSkipped('mediatomb crashes with this');
 
         $containers = $cont->getContainers();
         $this->assertNotNull($containers);
-        $this->assertType('array', $containers);
+        $this->assertInternalType('array', $containers);
         $this->assertTrue(count($containers) > 0);
     }
 
@@ -552,7 +531,7 @@ $this->markTestSkipped('mediatomb crashes with this');
     public function testGetRunningTasksNone()
     {
         $tasks = $this->object->getRunningTasks();
-        $this->assertType('array', $tasks);
+        $this->assertInternalType('array', $tasks);
         $this->assertEquals(0, count($tasks));
     }
 
@@ -575,7 +554,7 @@ $this->markTestSkipped('mediatomb crashes with this');
         $this->object->add($path);
 
         $tasks = $this->object->getRunningTasks();
-        $this->assertType('array', $tasks);
+        $this->assertInternalType('array', $tasks);
         $this->assertEquals(1, count($tasks));
 
         //cancel it
@@ -583,7 +562,7 @@ $this->markTestSkipped('mediatomb crashes with this');
         usleep(1000);
 
         $tasks = $this->object->getRunningTasks();
-        $this->assertType('array', $tasks);
+        $this->assertInternalType('array', $tasks);
         $this->assertEquals(0, count($tasks));
     }
 
@@ -599,20 +578,20 @@ $this->markTestSkipped('mediatomb crashes with this');
         $utcon2 = $this->object->getSingleContainer(
             0, 'unittest'
         );
-        $this->assertType('Services_MediaTomb_Container', $utcon2);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon2);
 
         //id
         $utcon3 = $this->object->getSingleContainer(
             $utcon2->id, 'testGetSingleContainer'
         );
-        $this->assertType('Services_MediaTomb_Container', $utcon3);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon3);
         $this->assertEquals($utcon->id, $utcon3->id);
 
         //object
         $utcon4 = $this->object->getSingleContainer(
             $utcon2, 'testGetSingleContainer'
         );
-        $this->assertType('Services_MediaTomb_Container', $utcon4);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon4);
         $this->assertEquals($utcon->id, $utcon4->id);
 
         //non-existing item
@@ -637,18 +616,18 @@ $this->markTestSkipped('mediatomb crashes with this');
     {
         //prepare
         $utcon = $this->object->createContainer(0, 'unittest');
-        $this->assertType('Services_MediaTomb_Container', $utcon);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
 
         $link = $this->object->createExternalLink(
             $utcon->id,
             'testGetSingleItem', 'http://example.org/testGetSingleItem',
             'descript', 'text/html'
         );
-        $this->assertType('Services_MediaTomb_ExternalLink', $link);
+        $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $link);
 
         //test
         $link2 = $this->object->getSingleItem($utcon->id, 'testGetSingleItem');
-        $this->assertType('Services_MediaTomb_ExternalLink', $link2);
+        $this->assertInstanceOf('Services_MediaTomb_ExternalLink', $link2);
         $this->assertEquals($link->title, $link2->title);
         $this->assertEquals($link->url, $link2->url);
 
@@ -676,7 +655,7 @@ $this->markTestSkipped('mediatomb crashes with this');
         $utcon->title = 'testSaveItem2';
         $utcon->save();
 
-        $this->assertType(
+        $this->assertInstanceOf(
             'Services_MediaTomb_Container',
             $this->object->getContainerByPath('unittest/testSaveItem2')
         );
@@ -696,7 +675,7 @@ $this->markTestSkipped('mediatomb crashes with this test');
         $itemTitle2 = 'renamed item';
 
         $container = $this->object->createContainerByPath($containerPath);
-        $this->assertType('Services_MediaTomb_Container', $container);
+        $this->assertInstanceOf('Services_MediaTomb_Container', $container);
 
         $item = new Services_MediaTomb_Item();
         $item->title       = $itemTitle;
@@ -705,14 +684,14 @@ $this->markTestSkipped('mediatomb crashes with this test');
         $item->mimetype    = 'text/plain';
 
         $item = $this->object->create($container, $item);
-        $this->assertType('Services_MediaTomb_Item', $item);
+        $this->assertInstanceOf('Services_MediaTomb_Item', $item);
 
         $item->title = $itemTitle2;
         $this->assertTrue($item->save());
 
         //see if we really added it and it can be accessed
         $item2 = $this->object->getItemByPath($containerPath . $itemTitle2);
-        $this->assertType('Services_MediaTomb_Item', $item2);
+        $this->assertInstanceOf('Services_MediaTomb_Item', $item2);
         $this->assertEquals($item->id, $item2->id);
 
         //old one should not exist anymore
@@ -721,10 +700,5 @@ $this->markTestSkipped('mediatomb crashes with this test');
         );
     }
 
-}
-
-// Call Services_MediaTombTest::main() if this source file is executed directly.
-if (PHPUnit_MAIN_METHOD == 'Services_MediaTombTest::main') {
-    Services_MediaTombTest::main();
 }
 ?>
