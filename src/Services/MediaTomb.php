@@ -94,7 +94,7 @@ class Services_MediaTomb
     *
     * @see workaroundTimingBug()
     */
-    public $bWorkaroundTimingBug = true;
+    public $bWorkaroundTimingBug = false;
 
 
 
