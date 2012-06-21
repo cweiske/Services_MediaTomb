@@ -285,7 +285,7 @@ class Services_MediaTomb
 
 
         if (isset($json->error)) {
-            $strMessage = (string)$json->error;
+            $strMessage = (string)$json->error->text;
             $nCode      = Services_MediaTomb_ServerException::NORMAL_ERROR;
 
             //currently there are no mediatomb error status codes :/
