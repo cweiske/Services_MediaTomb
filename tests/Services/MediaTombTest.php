@@ -22,11 +22,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
             include_once $configFile;
         }
 
-        $strSrcDir = dirname(__FILE__) . '/../../src';
-        if (file_exists($strSrcDir)) {
-            chdir($strSrcDir);
-        }
-
         require_once 'Services/MediaTomb.php';
 
         $strMockPath = dirname(__FILE__) . '/MediaTombTest/MediaTombMock.php';
