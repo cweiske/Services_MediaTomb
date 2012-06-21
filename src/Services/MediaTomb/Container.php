@@ -73,7 +73,15 @@ class Services_MediaTomb_Container extends Services_MediaTomb_ItemBase
     public function __construct(stdClass $container = null)
     {
         parent::__construct($container);
-        if ($container !== null) {
+        if ($container === null) {
+            return;
+        }
+
+        if (isset($container->obj_type)) {
+            //detail item
+            $this->title      = (string)$container->title->value;
+        } else {
+            //plain object from the list
             $this->childCount = (int)$container->child_count;
             $this->title      = (string)$container->title;
         }
