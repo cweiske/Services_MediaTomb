@@ -22,8 +22,8 @@
  <date>2012-06-21</date>
  <time>23:42:00</time>
  <version>
-  <release>0.2.0</release>
-  <api>0.2.0</api>
+  <release>0.2.1</release>
+  <api>0.2.1</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -118,8 +118,8 @@
  <changelog>
   <release>
    <version>
-    <release>0.2.0</release>
-    <api>0.2.0</api>
+    <release>0.2.1</release>
+    <api>0.2.1</api>
    </version>
    <stability>
     <release>alpha</release>
@@ -129,6 +129,25 @@
    <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
    <notes>
    Fix many bugs with JSON results
+   </notes>
+  </release>
+
+  <release>
+   <version>
+    <release>0.2.0</release>
+    <api>0.2.0</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2009-01-11</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+   - detailled - detailed. BC break!
+   - Switch to MediaTomb's new AJAX web interface from SVN.
+     This breaks compatibility with MediaTomb 0.11 - if you need this,
+     use Services_MediaTomb 0.1.2.
    </notes>
   </release>
 
