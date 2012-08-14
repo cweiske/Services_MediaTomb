@@ -520,7 +520,7 @@ class Services_MediaTomb
         $link->title       = $strTitle;
         $link->url         = $strUrl;
         $link->protocol    = $strProtocol;
-        $link->class       = 'object.item';
+        $link->class       = $strClass;
         $link->description = $strDescription;
         $link->mimetype    = $strMimetype;
 
