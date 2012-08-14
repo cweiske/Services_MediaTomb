@@ -19,11 +19,11 @@
   <active>yes</active>
  </lead>
 
- <date>2012-06-21</date>
+ <date>2012-08-14</date>
  <time>23:42:00</time>
  <version>
-  <release>0.2.1</release>
-  <api>0.2.1</api>
+  <release>0.2.2</release>
+  <api>0.2.2</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -31,7 +31,7 @@
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
  <notes>
-  Fix many bugs with JSON results
+  Fix $class type usage in external link creation [thanks to vit@free.fr]
  </notes>
 
  <contents>
@@ -116,6 +116,23 @@
 
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.2.2</release>
+    <api>0.2.2</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2012-08-14</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+    Fix $class type usage in external link creation [thanks to vit@free.fr]
+   </notes>
+  </release>
+
   <release>
    <version>
     <release>0.2.1</release>
