@@ -68,6 +68,7 @@
    <file role="test" name="config.php.dist" />
    <dir name="Services">
     <file role="test" name="MediaTombTest.php" />
+    <file role="test" name="MediaTombTestBase.php" />
     <dir name="MediaTombTest">
      <file role="test" name="MediaTombMock.php" />
     </dir>
