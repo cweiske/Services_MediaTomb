@@ -195,9 +195,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($link->title, $cont2->title);
     }
 
-    /**
-     *
-     */
     public function testCreateContainer()
     {
         //create container with mediatomb object
@@ -217,9 +214,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($utcon3->id, $utcon4->id);
     }
 
-    /**
-     *
-     */
     public function testCreateContainerByPath()
     {
         $utcon = $this->smt->createContainerByPath('unittest/odins');
@@ -278,9 +272,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testCreateExternalLink()
     {
         $utcon = $this->smt->createContainer(0, 'unittest');
@@ -309,9 +300,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(null, $null);
     }
 
-    /**
-     *
-     */
     public function testGetContainerByPath()
     {
         //any server should have an audio dir, except perhaps a video-only server
@@ -363,9 +351,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, $rootcontainer->id);
     }
 
-    /**
-     *
-     */
     public function testGetContainersByPath()
     {
         $this->assertInstanceOf(
@@ -406,9 +391,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, array_shift($arContainers)->id);
     }
 
-    /**
-     *
-     */
     public function testGetContainers()
     {
         $arContainers = $this->smt->getContainers(0);
@@ -435,9 +417,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testGetItemClass()
     {
         $this->assertEquals(
@@ -446,9 +425,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testGetItemByPath()
     {
         //prepare
@@ -469,9 +445,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($link->url, $link2->url);
     }
 
-    /**
-     *
-     */
     public function testGetItems()
     {
         $utcon = $this->smt->createContainerByPath('unittest/testGetItems');
@@ -572,11 +545,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($tasks));
     }
 
-
-
-    /**
-     *
-     */
     public function testGetSingleContainer()
     {
         $utcon = $this->smt->createContainerByPath('unittest/testGetSingleContainer');
@@ -615,9 +583,6 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testGetSingleItem()
     {
         //prepare
