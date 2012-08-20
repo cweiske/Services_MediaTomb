@@ -43,6 +43,12 @@ class Services_MediaTomb_ItemIteratorTest extends Services_MediaTombTestBase
         $this->assertEquals(10, $count);
     }
 
+    public function testIteratorCount()
+    {
+        $container = $this->makeSome();
+        $this->assertEquals(10, iterator_count($container->getItemIterator()));
+    }
+
 }
 
 ?>
