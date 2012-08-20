@@ -8,7 +8,7 @@ require_once __DIR__ . '/../MediaTombTestBase.php';
  */
 class Services_MediaTomb_ItemIteratorTest extends Services_MediaTombTestBase
 {
-    public function testIterator()
+    protected function makeSome()
     {
         $containerPath = 'unittest/iterator/';
         $container = $this->smt->createContainerByPath($containerPath);
@@ -28,6 +28,12 @@ class Services_MediaTomb_ItemIteratorTest extends Services_MediaTombTestBase
             );
         }
 
+        return $container;
+    }
+
+    public function testIterator()
+    {
+        $container = $this->makeSome();
         $iterator = $container->getItemIterator();
         $count = 0;
         foreach ($iterator as $item) {
