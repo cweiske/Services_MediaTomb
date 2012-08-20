@@ -293,6 +293,20 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('testCreateExternalLink', $link->title);
     }
 
+    public function testCreateExternalLinkNoReturn()
+    {
+        $utcon = $this->smt->createContainer(0, 'unittest');
+        $this->assertInstanceOf('Services_MediaTomb_Container', $utcon);
+
+        $null = $this->smt->createExternalLink(
+            $utcon->id,
+            'testCreateExternalLink', 'http://example.org/testCreateExternalLink',
+            'descript', 'text/html',
+            'http-get', 'object.item', false
+        );
+        $this->assertEquals(null, $null);
+    }
+
     /**
      *
      */

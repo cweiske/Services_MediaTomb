@@ -524,7 +524,7 @@ class Services_MediaTomb
         $link->description = $strDescription;
         $link->mimetype    = $strMimetype;
 
-        return $this->create($parent, $link, true);
+        return $this->create($parent, $link, $bReturn);
     }//public function createExternalLink(..)
 
 
