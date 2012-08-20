@@ -64,9 +64,11 @@ class Services_MediaTombTest extends PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         //remove unittest container
-        $cont = $this->smt->getContainerByPath('unittest');
-        if ($cont instanceof Services_MediaTomb_Container) {
-            $cont->delete();
+        if ($this->smt) {
+            $cont = $this->smt->getContainerByPath('unittest');
+            if ($cont instanceof Services_MediaTomb_Container) {
+                $cont->delete();
+            }
         }
     }
 
