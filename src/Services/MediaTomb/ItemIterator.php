@@ -168,7 +168,7 @@ class Services_MediaTomb_ItemIterator implements Iterator
     public function valid()
     {
         $bValid = array_key_exists($this->nIteratorPos, $this->arItems);
-        if (!$bValid) {
+        if (!$bValid && $this->nIteratorPos >= $this->nPageSize) {
             $this->nPos += $this->nPageSize;
             $this->loadItems();
             $bValid = array_key_exists($this->nIteratorPos, $this->arItems);

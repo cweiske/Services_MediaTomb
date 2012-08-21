@@ -63,6 +63,23 @@ class Services_MediaTomb_ItemIteratorTest extends Services_MediaTombTestBase
         $this->assertEquals(3, iterator_count($container->getItemIterator()));
     }
 
+    public function testIteratorReuse()
+    {
+        $container = $this->makeSome();
+        $iterator = $container->getItemIterator();
+
+        //first use: count
+        $this->assertEquals(3, iterator_count($iterator));
+
+        //second use: iterate over items
+        $count = 0;
+        foreach ($iterator as $item) {
+            $this->assertInstanceOf('Services_MediaTomb_Item', $item);
+            ++$count;
+        }
+        $this->assertEquals(3, $count, 'should be 10 on second try');
+    }
+
 }
 
 ?>
