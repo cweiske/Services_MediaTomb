@@ -19,11 +19,11 @@
   <active>yes</active>
  </lead>
 
- <date>2012-08-14</date>
- <time>23:42:00</time>
+ <date>2012-08-21</date>
+ <time>08:33:00</time>
  <version>
-  <release>0.2.2</release>
-  <api>0.2.2</api>
+  <release>0.2.3</release>
+  <api>0.2.3</api>
  </version>
  <stability>
   <release>alpha</release>
@@ -31,7 +31,8 @@
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
  <notes>
-  Fix $class type usage in external link creation [thanks to vit@free.fr]
+- Fix issue #1: ItemIterator broken after using iterator_count() on it
+- Fix issue #2: createExternalLink() ignores $bReturn parameter
  </notes>
 
  <contents>
@@ -69,6 +70,9 @@
    <dir name="Services">
     <file role="test" name="MediaTombTest.php" />
     <file role="test" name="MediaTombTestBase.php" />
+    <dir name="MediaTomb">
+     <file role="test" name="ItemIteratorTest.php" />
+    </dir>
     <dir name="MediaTombTest">
      <file role="test" name="MediaTombMock.php" />
     </dir>
@@ -110,6 +114,8 @@
 
    <install name="tests/config.php.dist"                   as="config.php.dist" />
    <install name="tests/Services/MediaTombTest.php"        as="Services/MediaTombTest.php" />
+   <install name="tests/Services/MediaTombTestBase.php"    as="Services/MediaTombTestBase.php" />
+   <install name="tests/Services/MediaTomb/ItemIteratorTest.php"  as="Services/MediaTomb/ItemIteratorTest.php" />
    <install name="tests/Services/MediaTombTest/MediaTombMock.php" as="Services/MediaTombTest/MediaTombMock.php" />
 
   </filelist>
@@ -117,6 +123,23 @@
 
 
  <changelog>
+
+  <release>
+   <version>
+    <release>0.2.3</release>
+    <api>0.2.3</api>
+   </version>
+   <stability>
+    <release>alpha</release>
+    <api>alpha</api>
+   </stability>
+   <date>2012-08-21</date>
+   <license uri="http://www.gnu.org/copyleft/lesser.html">LGPL</license>
+   <notes>
+- Fix issue #1: ItemIterator broken after using iterator_count() on it
+- Fix issue #2: createExternalLink() ignores $bReturn parameter
+   </notes>
+  </release>
 
   <release>
    <version>
