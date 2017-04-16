@@ -5,5 +5,7 @@ $GLOBALS['Services_MediaTomb_UnittestConfig'] = array(
     'username' => 'FIXME',
     'password' => 'FIXME',
     //'bWorkaroundTimingBug' => true
+    //'testfile' => '/path/to/testfile.txt',
+    //'testdir'  => '/path/to/testdir/',
 );
 ?>

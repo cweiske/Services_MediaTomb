@@ -23,14 +23,18 @@ class Services_MediaTombTest extends Services_MediaTombTestBase
     {
         //TODO: try with real file and check if it works
         $this->assertTrue(
-            $this->smt->add(__FILE__)
+            $this->smt->add(
+                $GLOBALS['Services_MediaTomb_UnittestConfig']['testfile']
+            )
         );
     }
 
     public function testAddDirectory()
     {
         $this->assertTrue(
-            $this->smt->add(dirname(__FILE__))
+            $this->smt->add(
+                $GLOBALS['Services_MediaTomb_UnittestConfig']['testdir']
+            )
         );
 
         //doesn't return false as of mediatomb 0.11

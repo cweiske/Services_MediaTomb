@@ -17,7 +17,7 @@ class Services_MediaTomb_ItemIteratorTest extends Services_MediaTombTestBase
         for ($n = 0; $n < $nCount; $n++) {
             $item = new Services_MediaTomb_Item();
             $item->title       = 'item #' . $n;
-            $item->location    = __FILE__;
+            $item->location    = $GLOBALS['Services_MediaTomb_UnittestConfig']['testfile'];
             $item->description = 'Just a test';
             $item->mimetype    = 'text/plain';
             

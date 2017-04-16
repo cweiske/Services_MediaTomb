@@ -47,6 +47,13 @@ class Services_MediaTombTestBase extends PHPUnit_Framework_TestCase
             $this->smt->bWorkaroundTimingBug
                 = $GLOBALS['Services_MediaTomb_UnittestConfig']['bWorkaroundTimingBug'];
         }
+
+        if (!isset($GLOBALS['Services_MediaTomb_UnittestConfig']['testfile'])) {
+            $GLOBALS['Services_MediaTomb_UnittestConfig']['testfile'] = __FILE__;
+        }
+        if (!isset($GLOBALS['Services_MediaTomb_UnittestConfig']['testdir'])) {
+            $GLOBALS['Services_MediaTomb_UnittestConfig']['testdir'] = __DIR__;
+        }
     }
 
     /**
